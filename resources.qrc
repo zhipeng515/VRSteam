@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>js/bridge.js</file>
+        <file>artwork/icon/icon256.png</file>
+        <file>artwork/icon/SinaVR.png</file>
+        <file>js/qwebchannel.js</file>
+    </qresource>
+</RCC>
