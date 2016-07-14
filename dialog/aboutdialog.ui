@@ -55,8 +55,11 @@
          </item>
          <item>
           <widget class="QLabel" name="infoLabel">
+           <property name="autoFillBackground">
+            <bool>false</bool>
+           </property>
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Times'; font-weight:600; color:#ffffff;&quot;&gt;新浪VR背靠门户网站新浪网、移动门户手机新浪网和社交网络服务及微博服务组成的数字媒体网络，帮助广大用户通过互联网和移动设备获得专业媒体和用户自生成的多媒体内容（UGC）并与友人进行兴趣分享。并通过与新浪科技，新浪视频，新浪娱乐联手打造VR行业投融资，VR影视平台，原创VR娱乐视频的分享。&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Times'; font-weight:600; color:#ffffff;&quot;&gt;新浪VR通过多方合作，受邀参与和报道国内外各大硬件厂商发布会。在国内众多重要互联网、游戏大会上给予VR产业分论坛媒体支持。关注开发者动态，与国内各大VR游戏开发者均建立良好合作关系，并积极开展线上活动和线下沙龙合作。&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Times'; font-weight:600; color:#000000;&quot;&gt;新浪VR背靠门户网站新浪网、移动门户手机新浪网和社交网络服务及微博服务组成的数字媒体网络，帮助广大用户通过互联网和移动设备获得专业媒体和用户自生成的多媒体内容（UGC）并与友人进行兴趣分享。并通过与新浪科技，新浪视频，新浪娱乐联手打造VR行业投融资，VR影视平台，原创VR娱乐视频的分享。&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Times'; font-weight:600; color:#000000;&quot;&gt;新浪VR通过多方合作，受邀参与和报道国内外各大硬件厂商发布会。在国内众多重要互联网、游戏大会上给予VR产业分论坛媒体支持。关注开发者动态，与国内各大VR游戏开发者均建立良好合作关系，并积极开展线上活动和线下沙龙合作。&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="textFormat">
             <enum>Qt::RichText</enum>
