@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     w.show();
 
 #ifdef Q_OS_OSX
-    a.setQuitOnLastWindowClosed(false);
+    a.setQuitOnLastWindowClosed(true);
 #endif
 
     return a.exec();

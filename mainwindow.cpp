@@ -81,9 +81,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     notificationService(nullptr),
-    notificationWrapper(nullptr)
+    notificationWrapper(nullptr),
+    beginDrag(false)
 {
     ui->setupUi(this);
+    this->setWindowFlags(Qt::FramelessWindowHint);
+//    this->setAttribute(Qt::WA_TranslucentBackground);
 
 #ifndef Q_OS_OSX
     setWindowIcon(QIcon(":/artwork/icon/icon256.png"));
@@ -103,6 +106,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     initActions();
     initMenus();
+    initTitleBar();
 
     readSettings();
 
@@ -255,6 +259,19 @@ void MainWindow::initMenus()
     aboutMenu->addAction(preferencesAction);
 }
 
+void MainWindow::initTitleBar()
+{
+    QPixmap minPixmap = this->style()->standardPixmap(QStyle::SP_TitleBarMinButton);
+    ui->miniWindow->setIcon(minPixmap);
+    connect(ui->miniWindow, SIGNAL(clicked()), this, SLOT(showMinimized()));
+
+    QPixmap closePixmap = this->style()->standardPixmap(QStyle::SP_TitleBarCloseButton);
+    ui->closeWindow->setIcon(closePixmap);
+    connect(ui->closeWindow, &QToolButton::clicked, this, []{
+        QApplication::quit();
+    });
+}
+
 bool MainWindow::event(QEvent *event)
 {
     if(event->type() == QEvent::WindowActivate)
@@ -264,6 +281,26 @@ bool MainWindow::event(QEvent *event)
     }
 
     return QMainWindow::event(event);
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *event) {
+    if (event->button() == Qt::LeftButton) {
+        beginDrag = true;
+        dragPosition = event->globalPos() - frameGeometry().topLeft();
+        event->accept();
+    }
+}
+void MainWindow::mouseMoveEvent(QMouseEvent *event) {
+    if (event->buttons() & Qt::LeftButton && beginDrag) {
+        move(event->globalPos() - dragPosition);
+        event->accept();
+    }
+}
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event);
+    beginDrag = false;
 }
 
 void MainWindow::notificationClicked(const Notification &notification)

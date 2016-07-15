@@ -26,6 +26,8 @@
 
 class WebView : public QWebEngineView
 {
+    Q_OBJECT
+
 public:
     WebView(QWidget *parent = 0);
 

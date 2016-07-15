@@ -65,6 +65,11 @@ public:
 protected:
     bool event(QEvent *event);
 
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+
+
 private:
     Ui::MainWindow *ui;
     NotificationService *notificationService;
@@ -72,11 +77,15 @@ private:
 
     DownloadManager * downloadManager;
 
+    bool beginDrag;
+    QPoint dragPosition;
+
     void saveSettings();
     void readSettings();
 
     void initActions();
     void initMenus();
+    void initTitleBar();
 
     void initDownloadManager();
     void initNotificationService();

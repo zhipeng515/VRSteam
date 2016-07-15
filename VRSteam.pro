@@ -29,7 +29,6 @@ DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
 SOURCES += main.cpp\
     mainwindow.cpp \
-    view/webview.cpp \
     view/webpage.cpp \
     notification/notificationservice.cpp \
     notification/nullnotificationservice.cpp \
@@ -40,10 +39,10 @@ SOURCES += main.cpp\
     download/downloadmanager.cpp \
     download/downloadmanagerFTP.cpp \
     download/downloadmanagerHTTP.cpp \
-    download/download.cpp
+    download/download.cpp \
+    view/webview.cpp
 
 HEADERS  += mainwindow.h \
-    view/webview.h \
     notification/notificationservice.h \
     notification/nullnotificationservice.h \
     notification/TrayNotificationService.h \
@@ -54,7 +53,8 @@ HEADERS  += mainwindow.h \
     download/downloadmanager.h \
     download/downloadmanagerFTP.h \
     download/downloadmanagerHTTP.h \
-    download/download.h
+    download/download.h \
+    view/webview.h
 
 FORMS    += mainwindow.ui \
     dialog/aboutdialog.ui \
