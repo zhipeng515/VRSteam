@@ -105,7 +105,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->webView->page(), SIGNAL(linkClicked(const QUrl&)), this, SLOT(linkClicked(const QUrl&)));
 
     initActions();
-    initMenus();
+//    initMenus();
     initTitleBar();
 
     readSettings();
@@ -261,13 +261,17 @@ void MainWindow::initMenus()
 
 void MainWindow::initTitleBar()
 {
+    QPixmap mainPixmap = this->style()->standardPixmap(QStyle::SP_TitleBarMenuButton);
+    ui->mainMenu->setIcon(mainPixmap);
+//    connect(ui->mainMenu, SIGNAL(clicked()), this, SLOT(showMinimized()));
+
     QPixmap minPixmap = this->style()->standardPixmap(QStyle::SP_TitleBarMinButton);
     ui->miniWindow->setIcon(minPixmap);
     connect(ui->miniWindow, SIGNAL(clicked()), this, SLOT(showMinimized()));
 
     QPixmap closePixmap = this->style()->standardPixmap(QStyle::SP_TitleBarCloseButton);
     ui->closeWindow->setIcon(closePixmap);
-    connect(ui->closeWindow, &QToolButton::clicked, this, []{
+    connect(ui->closeWindow, &QToolButton::clicked, []{
         QApplication::quit();
     });
 }
