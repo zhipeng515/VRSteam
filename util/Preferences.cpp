@@ -31,7 +31,7 @@ Preferences::Preferences()
     setBlacklist("http://passport.weibo.com/visitor/visitor?from=iframe");
 
     if(getDownloadPath() == "") {
-        QString downloadPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "/VRSteam/Downloads";
+        QString downloadPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "/VRSteam/Downloads/";
         setDownloadPath(downloadPath);
     }
 }

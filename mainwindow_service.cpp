@@ -3,6 +3,7 @@
 #include <QDesktopServices>
 #include "util/regexputils.h"
 #include "download/downloadmanager.h"
+#include "util/Preferences.h"
 
 void MainWindow::linkClicked(const QUrl & url)
 {
@@ -21,7 +22,7 @@ void MainWindow::linkClicked(const QUrl & url)
         if(customProtocol.count() > 2) {
             if(customProtocol[0] == "vrst") {
                 if(customProtocol[1] == "download" && RegExpUtils::Instance().isUrl(customProtocol[2])) {
-                    downloadManager->download(customProtocol[2], "/Users/zhipeng/Downloads/");
+                    downloadManager->download(customProtocol[2], Preferences::Instance().getDownloadPath());
                 }
                 else if(customProtocol[1] == "open" && RegExpUtils::Instance().isUrl(customProtocol[2])) {
                     ui->webView->load(customProtocol[2]);
