@@ -73,9 +73,7 @@ NotificationService::NotificationService(QObject *parent)
 
 NotificationService* NotificationService::getNotificationService(QObject *parent)
 {
-    Preferences preferences;
-
-    switch(preferences.getNotificationType())
+    switch(Preferences::Instance().getNotificationType())
     {
         case Preferences::NotificationTypeNative:
             qDebug() << "Using native notifications";

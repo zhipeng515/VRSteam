@@ -92,13 +92,13 @@ void WebView::downloadRequested(QWebEngineDownloadItem *download)
 void WebView::onFeaturePermissionRequest(const QUrl &securityOrigin, QWebEnginePage::Feature feature)
 {
 
-    if(preferences.isPermissionGranted(feature))
+    if(Preferences::Instance().isPermissionGranted(feature))
     {
         page()->setFeaturePermission(securityOrigin, feature, QWebEnginePage::PermissionGrantedByUser);
         return;
     }
 
-    if(preferences.isPermissionDenied(feature))
+    if(Preferences::Instance().isPermissionDenied(feature))
     {
         page()->setFeaturePermission(securityOrigin, feature, QWebEnginePage::PermissionDeniedByUser);
         return;
@@ -148,7 +148,7 @@ void WebView::onFeaturePermissionRequest(const QUrl &securityOrigin, QWebEngineP
 
     if(checkBox->isChecked())
     {
-        preferences.setPermission(feature, accepted);
+        Preferences::Instance().setPermission(feature, accepted);
     }
 }
 

@@ -168,13 +168,6 @@ void MainWindow::webViewTitleChanged(const QString &title)
     notificationService->setApplicationBadge(badge);
 }
 
-void MainWindow::linkClicked(const QUrl & url)
-{
-    qDebug() << __FUNCTION__  + url.toString();
-
-//    downloadManager->download(url, "/Users/zhipeng/Downloads/");
-}
-
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     saveSettings();

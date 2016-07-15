@@ -27,11 +27,15 @@ class Preferences {
 
 public:
 
+    static Preferences & Instance();
+
     enum NotificationType {
         NotificationTypeNative = 0,
         NotificationTypeSystemTray,
         NotificationTypeNull
     };
+
+    Preferences();
 
     void setNotificationType(NotificationType type);
     NotificationType getNotificationType();
@@ -41,8 +45,15 @@ public:
     bool isPermissionGranted(QWebEnginePage::Feature feature);
     bool isPermissionDenied(QWebEnginePage::Feature feature);
 
+    void setBlacklist(const QString& url);
+    bool isInBlacklist(const QString& url);
+
+    void setDownloadPath(const QString& path);
+    QString getDownloadPath();
+
 private:
     QSettings settings;
+    QStringList blacklist;
 };
 
 

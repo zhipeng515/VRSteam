@@ -37,8 +37,6 @@ public:
 
 private:
     Ui::PreferencesDialog *ui;
-
-    Preferences preferences;
 };
 
 #endif // PREFERENCESDIALOG_H

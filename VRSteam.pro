@@ -40,7 +40,9 @@ SOURCES += main.cpp\
     download/downloadmanagerFTP.cpp \
     download/downloadmanagerHTTP.cpp \
     download/download.cpp \
-    view/webview.cpp
+    view/webview.cpp \
+    mainwindow_service.cpp \
+    util/regexputils.cpp
 
 HEADERS  += mainwindow.h \
     notification/notificationservice.h \
@@ -54,7 +56,8 @@ HEADERS  += mainwindow.h \
     download/downloadmanagerFTP.h \
     download/downloadmanagerHTTP.h \
     download/download.h \
-    view/webview.h
+    view/webview.h \
+    util/regexputils.h
 
 FORMS    += mainwindow.ui \
     dialog/aboutdialog.ui \

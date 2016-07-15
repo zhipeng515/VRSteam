@@ -34,8 +34,6 @@ public:
     void contextMenuEvent(QContextMenuEvent *event);
 
 private:
-    Preferences preferences;
-
     void insertJavaScript(QWebEngineScriptCollection *scripts);
 
 private slots:
