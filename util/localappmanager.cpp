@@ -1,5 +1,5 @@
 #include "localappmanager.h"
-#include "appinfo.h"
+#include "models.h"
 
 LocalAppManager::LocalAppManager(QObject *parent) : QObject(parent)
 {
@@ -18,5 +18,5 @@ void LocalAppManager::uninstallApp(const AppInfo & app)
 
 bool LocalAppManager::isAppInstalled(const AppInfo & app)
 {
-    return AppInfo::getAppInfo(app.id).isValid();
+    return AppInfo::getModel(app.id())->isValid();
 }

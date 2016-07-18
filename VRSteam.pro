@@ -44,7 +44,8 @@ SOURCES += main.cpp\
     mainwindow_service.cpp \
     util/regexputils.cpp \
     util/localappmanager.cpp \
-    util/appinfo.cpp
+    util/modelbase.cpp \
+    util/models.cpp
 
 HEADERS  += mainwindow.h \
     notification/notificationservice.h \
@@ -61,7 +62,8 @@ HEADERS  += mainwindow.h \
     view/webview.h \
     util/regexputils.h \
     util/localappmanager.h \
-    util/appinfo.h
+    util/modelbase.h \
+    util/models.h
 
 FORMS    += mainwindow.ui \
     dialog/aboutdialog.ui \
@@ -96,3 +98,4 @@ RESOURCES += \
     resources.qrc
 
 include ($$PWD/3rd-party/QSimpleUpdater/QSimpleUpdater.pri)
+include ($$PWD/3rd-party/QtJson/src/QtJson.pri)

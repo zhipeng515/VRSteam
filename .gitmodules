@@ -1,3 +1,6 @@
 [submodule "3rd-party/QSimpleUpdater"]
 	path = 3rd-party/QSimpleUpdater
 	url = https://github.com/alex-spataru/QSimpleUpdater.git
+[submodule "3rd-party/QtJson"]
+	path = 3rd-party/QtJson
+	url = https://github.com/kernel-coder/QtJson.git
