@@ -30,6 +30,7 @@
 #include "view/webpage.h"
 
 #include "download/downloadmanager.h"
+#include "QSimpleUpdater.h"
 
 JSNotifcationWrapper::JSNotifcationWrapper(NotificationService *service, QObject *parent)
     : QObject(parent),
@@ -91,29 +92,27 @@ MainWindow::MainWindow(QWidget *parent) :
 #ifndef Q_OS_OSX
     setWindowIcon(QIcon(":/artwork/icon/icon256.png"));
 #endif
-
+    checkSelfUpdate();
     initDownloadManager();
-
     initNotificationService();
 
-    notificationWrapper = new JSNotifcationWrapper(notificationService, this);
-    auto channel = new QWebChannel(this);
-    channel->registerObject("notificationService", notificationWrapper);
-    ui->webView->page()->setWebChannel(channel);
-
-    connect(ui->webView, &WebView::titleChanged, this, &MainWindow::webViewTitleChanged);
-    connect(ui->webView->page(), SIGNAL(linkClicked(const QUrl&)), this, SLOT(linkClicked(const QUrl&)));
-
     initActions();
-//    initMenus();
+    initMenus();
     initTitleBar();
+
+    initMainWebView();
 
     readSettings();
 
+    nativeSetup();
+}
+
+void MainWindow::initMainWebView()
+{
+    connect(ui->webView, &WebView::titleChanged, this, &MainWindow::webViewTitleChanged);
+    connect(ui->webView->page(), SIGNAL(linkClicked(const QUrl&)), this, SLOT(linkClicked(const QUrl&)));
 //    ui->webView->load(QUrl("https://web.whatsapp.com"));
     ui->webView->load(QUrl("http://vr.sina.com.cn"));
-
-    nativeSetup();
 }
 
 void MainWindow::initDownloadManager()
@@ -124,15 +123,6 @@ void MainWindow::initDownloadManager()
     connect(downloadManager, SIGNAL(progress(int nPercentage)), this, SLOT(downloadProgress(int nPercentage)));
 }
 
-void MainWindow::downloadComplete()
-{
-    qDebug() << __FUNCTION__;
-}
-
-void MainWindow::downloadProgress(int nPercentage)
-{
-    qDebug() << __FUNCTION__ << "(%" << nPercentage << ")";
-}
 
 void MainWindow::initNotificationService() {
     if(notificationService) notificationService->deleteLater();
@@ -142,6 +132,11 @@ void MainWindow::initNotificationService() {
     connect(notificationService, &NotificationService::notificationReplied, this, &MainWindow::notificationReplied);
 
     if(notificationWrapper) notificationWrapper->setNotificationService(notificationService);
+
+    notificationWrapper = new JSNotifcationWrapper(notificationService, this);
+    auto channel = new QWebChannel(this);
+    channel->registerObject("notificationService", notificationWrapper);
+    ui->webView->page()->setWebChannel(channel);
 }
 
 MainWindow::~MainWindow()
@@ -267,6 +262,21 @@ void MainWindow::initTitleBar()
     connect(ui->closeWindow, &QToolButton::clicked, []{
         QApplication::quit();
     });
+}
+
+static const QString DEFS_URL = "https://raw.githubusercontent.com/"
+                                "alex-spataru/QSimpleUpdater/master/tutorial/"
+                                "definitions/updates.json";
+void MainWindow::checkSelfUpdate()
+{
+    /* Apply the settings */
+    QSimpleUpdater::getInstance()->setModuleVersion(DEFS_URL, APP_VERSION);
+    QSimpleUpdater::getInstance()->setNotifyOnFinish(DEFS_URL, true);
+    QSimpleUpdater::getInstance()->setNotifyOnUpdate(DEFS_URL, true);
+    QSimpleUpdater::getInstance()->setDownloaderEnabled(DEFS_URL, true);
+
+    /* Check for updates */
+    QSimpleUpdater::getInstance()->checkForUpdates(DEFS_URL);
 }
 
 bool MainWindow::event(QEvent *event)

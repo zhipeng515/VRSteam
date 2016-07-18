@@ -42,7 +42,9 @@ SOURCES += main.cpp\
     download/download.cpp \
     view/webview.cpp \
     mainwindow_service.cpp \
-    util/regexputils.cpp
+    util/regexputils.cpp \
+    util/localappmanager.cpp \
+    util/appinfo.cpp
 
 HEADERS  += mainwindow.h \
     notification/notificationservice.h \
@@ -57,7 +59,9 @@ HEADERS  += mainwindow.h \
     download/downloadmanagerHTTP.h \
     download/download.h \
     view/webview.h \
-    util/regexputils.h
+    util/regexputils.h \
+    util/localappmanager.h \
+    util/appinfo.h
 
 FORMS    += mainwindow.ui \
     dialog/aboutdialog.ui \
@@ -90,3 +94,5 @@ unix:!mac {
 
 RESOURCES += \
     resources.qrc
+
+include ($$PWD/3rd-party/QSimpleUpdater/QSimpleUpdater.pri)

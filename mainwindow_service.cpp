@@ -31,3 +31,13 @@ void MainWindow::linkClicked(const QUrl & url)
         }
     }
 }
+
+void MainWindow::downloadComplete()
+{
+    qDebug() << __FUNCTION__;
+}
+
+void MainWindow::downloadProgress(int nPercentage)
+{
+    qDebug() << __FUNCTION__ << "(%" << nPercentage << ")";
+}

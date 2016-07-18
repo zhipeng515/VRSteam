@@ -90,6 +90,10 @@ private:
     void initDownloadManager();
     void initNotificationService();
 
+    void initMainWebView();
+
+    void checkSelfUpdate();
+
 #ifdef Q_OS_OSX
     void nativeSetup();
 #else
