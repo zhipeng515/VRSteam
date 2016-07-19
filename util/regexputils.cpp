@@ -52,7 +52,7 @@ QStringList RegExpUtils::matchCustomUrl(const QString& url)
     if(!url.isEmpty())
     {
         QString strTempUrl = url; //需要进行正则匹配的内容
-        QRegExp customProtoclExp("([A-Za-z]{1,10})://([A-Za-z0-9]{1,20})\\?(.*$)");
+        QRegExp customProtoclExp("([A-Za-z]{1,10})://([A-Za-z0-9]{1,20})\\?(.+$)");
         customProtoclExp.setMinimal(true); //最小匹配模式
 
         if(customProtoclExp.exactMatch(strTempUrl))

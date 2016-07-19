@@ -8,15 +8,7 @@
 class modelclass : public baseclass \
 { \
 public: \
-    explicit modelclass(QObject *parent = 0) : baseclass(parent){ \
-        id(-1); \
-    } \
-    virtual ~modelclass() { \
-        for( auto model = modelsMap.begin(); model != modelsMap.end(); model++) {\
-            delete (*model).second; \
-        } \
-        modelsMap.clear(); \
-    } \
+    explicit modelclass(QObject *parent = 0) : baseclass(parent){} \
 \
     inline bool isValid(){ return this != &modelclass::invalidModel; } \
 \
@@ -39,16 +31,26 @@ public: \
         modelsMap.insert(std::map<const int, modelclass*>::value_type(id, model)); \
     } \
 \
+    static inline void removeModel(const int id) { \
+        auto model = modelsMap.find(id); \
+        if(model != modelsMap.end()) { \
+            delete (*model).second; \
+            modelsMap.erase(model); \
+        } \
+    } \
+\
+    static inline void removeAllModels() { \
+        for( auto model = modelsMap.begin(); model != modelsMap.end(); model++) { \
+            delete (*model).second; \
+        } \
+        modelsMap.clear(); \
+    } \
+\
     static inline std::map<const int, modelclass*> & models(){ return modelsMap; } \
     static modelclass invalidModel; \
 \
 private: \
-    static std::map<const int, modelclass*> modelsMap; \
-\
-public slots: \
-    MetaPropertyPublicSet(int, id) \
-    MetaPropertyPublicSet(QString, name)
-
+    static std::map<const int, modelclass*> modelsMap;
 
 #define DECLARE_MODEL_END(modelclass) \
 };

@@ -12,6 +12,7 @@
 
 #include "download/downloadmanager.h"
 #include "util/localappmanager.h"
+#include "util/regexputils.h"
 
 void MainWindow::initActions()
 {
@@ -137,6 +138,7 @@ void MainWindow::initWebService()
     channel->registerObject("downloadService", downloadManager);
     channel->registerObject("localAppService", localAppManager);
     channel->registerObject("webViewService", webViewService);
+    channel->registerObject("regExpService", &RegExpUtils::Instance());
 
     ui->webView->page()->setWebChannel(channel);
 }
