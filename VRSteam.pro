@@ -100,3 +100,6 @@ RESOURCES += \
 
 include ($$PWD/3rd-party/QSimpleUpdater/QSimpleUpdater.pri)
 include ($$PWD/3rd-party/QtJson/src/QtJson.pri)
+
+DISTFILES += \
+    README.MD

@@ -1,13 +1,45 @@
-# WhatsQt
+﻿1.C++暴露给JS的对象在mainwindow.h文件中
 
-WhatsQt is bringing WhatsApp Web natively to OS X, Linux and Windows. WhatsQt integrates seamlessly into your existing environment. You do not have to search the WhatsApp Web browser tab anymore, WhatsQt is a standalone application.
+依赖QWebChannel.js
 
-**Please note:** This project is not related in any way to WhatsApp, it is just a private hobby!
+JSNotifcationWrapper *notificationWrapper;
+WebViewService  * webViewService;
+DownloadManager * downloadManager;
+LocalAppManager * localAppManager;
 
-### How does it work?
+使用以下代码注册给JS
+auto channel = new QWebChannel(this);
+channel->registerObject("notificationService", notificationWrapper);
+channel->registerObject("downloadService", downloadManager);
+channel->registerObject("localAppService", localAppManager);
+channel->registerObject("webViewService", webViewService);
+ui->webView->page()->setWebChannel(channel);
 
-WhatsQt is written in C++ and uses the Qt GUI framework, which also offers a module called QtWebEngine. The QtWebEngine is used to render WhatsApp Web and execute the JavaScript code.
 
-#### Build status (Linux & OS X)
+2.JS文件使用下面代码接受C++对象
+new QWebChannel(qt.webChannelTransport, function(channel) {
+    var notificationService = channel.objects.notificationService;
+    var downloadService = channel.objects.downloadService;
+    var localAppService = channel.objects.localAppService;
+    var webViewService = channel.objects.webViewService;
+}
 
-develop: [![Build Status](https://travis-ci.org/mjdev/WhatsQt.svg?branch=develop)](https://travis-ci.org/mjdev/WhatsQt) master: [![Build Status](https://travis-ci.org/mjdev/WhatsQt.svg?branch=master)](https://travis-ci.org/mjdev/WhatsQt)
+3.JS可以调用的C++对象方法及信号处理在对应的.h中声明
+
+slots关键字之后的方法是可以直接调用的
+webViewService.load("http://vr.sina.com.cn”);
+
+如果方法带有返回值使用回调方式获得返回值并处理
+localAppService.isAppInstalled(0, function(isInstalled){
+    if(isInstalled)
+        alert("a");
+    else
+        alert("b");
+});
+
+signal关键字对应的处理方法
+对象.signal.connect
+downloadService.progress.connect(function(progress) {
+    console.log("js log: %" + progress);
+});
+
