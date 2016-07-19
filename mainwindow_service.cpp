@@ -4,6 +4,7 @@
 #include "util/regexputils.h"
 #include "download/downloadmanager.h"
 #include "util/Preferences.h"
+#include "util/models.h"
 
 void MainWindow::linkClicked(const QUrl & url)
 {
@@ -40,4 +41,34 @@ void MainWindow::downloadComplete()
 void MainWindow::downloadProgress(int nPercentage)
 {
     qDebug() << __FUNCTION__ << "(%" << nPercentage << ")";
+}
+
+void MainWindow::appInstallBegin(const AppInfo & appInfo)
+{
+    qDebug() << __FUNCTION__ << "(%" << appInfo.name() << ")";
+}
+
+void MainWindow::appInstallProgress(int percentage)
+{
+    qDebug() << __FUNCTION__ << "(%" << percentage << ")";
+}
+
+void MainWindow::appInstallComplete(const AppInfo & appInfo)
+{
+    qDebug() << __FUNCTION__ << "(%" << appInfo.name() << ")";
+}
+
+void MainWindow::webViewLoadStarted()
+{
+    qDebug() << __FUNCTION__;
+}
+
+void MainWindow::webViewLoadProgress(int progress)
+{
+    qDebug() << __FUNCTION__ << "(%" << progress << ")";
+}
+
+void MainWindow::webViewLoadFinished(bool)
+{
+    qDebug() << __FUNCTION__;
 }

@@ -16,7 +16,7 @@ void LocalAppManager::uninstallApp(const AppInfo & app)
     Q_UNUSED(app);
 }
 
-bool LocalAppManager::isAppInstalled(const AppInfo & app)
+bool LocalAppManager::isAppInstalled(const int appId)
 {
-    return AppInfo::getModel(app.id())->isValid();
+    return AppInfo::getModel(appId)->isValid();
 }

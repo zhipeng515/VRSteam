@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <script type="text/javascript" src="./qwebchannel.js"></script>
+        <script type="text/javascript">
+            //BEGIN SETUP
+            function printObj(obj){
+                var description = "";
+                for(var i in obj){
+                var property=obj[i];
+                    description+=i+" = "+property+"\n";
+                }
+                alert(description);
+            }
+            function obj2string(o){
+             var r=[];
+             if(typeof o=="string"){
+              return "\""+o.replace(/([\'\"\\])/g,"\\$1").replace(/(\n)/g,"\\n").replace(/(\r)/g,"\\r").replace(/(\t)/g,"\\t")+"\"";
+             }
+             if(typeof o=="object"){
+              if(!o.sort){
+               for(var i in o){
+                r.push(i+":"+obj2string(o[i]));
+               }
+               if(!!document.all&&!/^\n?function\s*toString\(\)\s*\{\n?\s*\[native code\]\n?\s*\}\n?\s*$/.test(o.toString)){
+                r.push("toString:"+o.toString.toString());
+               }
+               r="{"+r.join()+"}";
+              }else{
+               for(var i=0;i<o.length;i++){
+                r.push(obj2string(o[i]))
+               }
+               r="["+r.join()+"]";
+              }
+              return r;
+             }
+             return o.toString();
+            }
+            function output(message)
+            {
+                var output = document.getElementById("output");
+                output.innerHTML = output.innerHTML + message + "\n";
+            }
+            window.onload = function() {
+
+            output("setting up QWebChannel.");
+            new QWebChannel(qt.webChannelTransport, function(channel) {
+                // make dialog object accessible globally
+
+                var notificationService = channel.objects.notificationService;
+                var downloadService = channel.objects.downloadService;
+                var localAppService = channel.objects.localAppService;
+                var webViewService = channel.objects.webViewService;
+
+
+                downloadService.progress.connect(function(progress) {
+                    output("js log: %" + progress);
+                });
+
+                document.getElementById("send").onclick = function() {
+                    var input = document.getElementById("input");
+                    var text = input.value;
+                    if (!text) {
+                        return;
+                    }
+
+                    output(text);
+                    webViewService.load(text);
+
+                    localAppService.isAppInstalled(0, function(isInstalled){
+                        if(isInstalled)
+                            alert("a");
+                        else
+                            alert("b");
+                    });
+                }
+
+                content.receiveText("Client connected, ready to send/receive messages!");
+                output("Connected to WebChannel, ready to send/receive messages!");
+            });
+            }
+
+            //END SETUP
+        </script>
+        <style type="text/css">
+            html {
+                height: 100%;
+                width: 100%;
+            }
+            #input {
+                width: 400px;
+                margin: 0 10px 0 0;
+            }
+            #send {
+                width: 90px;
+                margin: 0;
+            }
+            #output {
+                width: 500px;
+                height: 300px;
+            }
+        </style>
+    </head>
+    <body>
+        <textarea id="output"></textarea><br />
+        <input id="input" /><input type="submit" id="send" value="Send" onclick="javascript:click();" />
+        <p>下载：<a href="vrst://download?http://download.youmengchuangxiang.com/android-test/xuanyao.2.15.201607111916.apk">炫耀党</a></p>
+        <p>打开：<a href="vrst://open?http://vr.sina.com.cn">VR频道</a></p>
+    </body>
+</html>

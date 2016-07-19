@@ -45,7 +45,8 @@ SOURCES += main.cpp\
     util/regexputils.cpp \
     util/localappmanager.cpp \
     util/modelbase.cpp \
-    util/models.cpp
+    util/models.cpp \
+    mainwindow_init.cpp
 
 HEADERS  += mainwindow.h \
     notification/notificationservice.h \

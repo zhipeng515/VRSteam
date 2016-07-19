@@ -12,7 +12,7 @@ RegExpUtils::RegExpUtils(QObject *parent) : QObject(parent)
 
 }
 
-bool RegExpUtils::isUrl(const QString &strText)
+bool RegExpUtils::isContainUrl(const QString &strText)
 {
     bool bResult = false;
     QString strTempText = strText;
@@ -30,6 +30,22 @@ bool RegExpUtils::isUrl(const QString &strText)
     return bResult; //返回是否包含url
 }
 
+bool RegExpUtils::isUrl(const QString &strText)
+{
+    bool bResult = false;
+    QString strTempText = strText;
+    QString strUrlExp = "((http|https|ftp)://|(www)\\.)(\\w+)(\\.?[\\.a-z0-9/:?%&=\\-_+#;]*)";
+    QRegExp urlRegExp(strUrlExp,Qt::CaseInsensitive); //Url正则表达式，不区分大小写
+    if(urlRegExp.exactMatch(strTempText))
+    {
+        bResult = true;
+        QString strWebUrl = urlRegExp.cap(0);//匹配到的url
+
+        qDebug() << strWebUrl; //输出url
+    }
+    return bResult; //返回是否包含url
+}
+
 QStringList RegExpUtils::matchCustomUrl(const QString& url)
 {
     QStringList strList;
@@ -39,7 +55,7 @@ QStringList RegExpUtils::matchCustomUrl(const QString& url)
         QRegExp customProtoclExp("([A-Za-z]{1,10})://([A-Za-z0-9]{1,20})\\?(.*$)");
         customProtoclExp.setMinimal(true); //最小匹配模式
 
-        while(customProtoclExp.indexIn(strTempUrl) != -1)
+        if(customProtoclExp.exactMatch(strTempUrl))
         {
             if(customProtoclExp.captureCount() == 3)
             {
@@ -55,11 +71,9 @@ QStringList RegExpUtils::matchCustomUrl(const QString& url)
 
                 QString strCustomUrl = customProtoclExp.cap(0);//匹配到的url
                 qDebug() << strCustomUrl; //输出url
-                int nIndex = strTempUrl.indexOf(strCustomUrl); //索引位置
-                strTempUrl.remove(0,nIndex+strCustomUrl.size()); //删除已遍历过的内容
             }
-        }/*end of while(remindExp)*/
-    }/*end of if(!url)*/
+        }
+    }
 
     return strList;
 }

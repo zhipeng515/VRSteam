@@ -14,6 +14,7 @@ public:
 signals:
 
 public slots:
+    bool isContainUrl(const QString& url);
     bool isUrl(const QString& url);
     QStringList matchCustomUrl(const QString& url);
 };

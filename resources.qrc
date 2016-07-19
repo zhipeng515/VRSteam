@@ -4,5 +4,7 @@
         <file>artwork/icon/icon256.png</file>
         <file>artwork/icon/SinaVR.png</file>
         <file>js/qwebchannel.js</file>
+        <file>js/test.js</file>
+        <file>html/test.html</file>
     </qresource>
 </RCC>

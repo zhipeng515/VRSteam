@@ -69,14 +69,6 @@ void WebView::insertJavaScript(QWebEngineScriptCollection *scripts)
     webChannelScript.setInjectionPoint(QWebEngineScript::DocumentCreation);
     webChannelScript.setWorldId(QWebEngineScript::MainWorld);
     scripts->insert(webChannelScript);
-
-    QWebEngineScript script;
-    QFile file(":/js/bridge.js");
-    file.open(QIODevice::ReadOnly);
-    script.setSourceCode(file.readAll());
-    script.setInjectionPoint(QWebEngineScript::DocumentReady);
-    script.setWorldId(QWebEngineScript::MainWorld);
-    scripts->insert(script);
 }
 
 

@@ -19,7 +19,7 @@ signals:
 public slots:
     void installApp(const AppInfo & app);
     void uninstallApp(const AppInfo & app);
-    bool isAppInstalled(const AppInfo & app);
+    bool isAppInstalled(const int appId);
 };
 
 #endif // LOCALAPPMANAGER_H

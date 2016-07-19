@@ -23,10 +23,41 @@
 
 
 #include "notification/notificationservice.h"
+#include "view/webview.h"
 
 namespace Ui {
 class MainWindow;
 }
+
+class WebViewService : public QObject
+{
+    Q_OBJECT
+
+public:
+    explicit WebViewService(WebView * view, QWidget* parent = Q_NULLPTR) : QObject(parent), webView(view)
+    {
+        connect(webView, &WebView::loadStarted, this, &WebViewService::loadStarted);
+        connect(webView, &WebView::loadProgress, this, &WebViewService::loadProgress);
+        connect(webView, &WebView::loadFinished, this, &WebViewService::loadFinished);
+        connect(webView, &WebView::titleChanged, this, &WebViewService::titleChanged);
+    }
+
+public slots:
+    void load(const QUrl& url) { webView->load(url); }
+    void stop() { webView->stop(); }
+    void back() { webView->back(); }
+    void forward() { webView->forward(); }
+    void reload() { webView->reload(); }
+
+signals:
+    void loadStarted();
+    void loadProgress(int progress);
+    void loadFinished(bool);
+    void titleChanged(const QString& title);
+
+private:
+    WebView * webView;
+};
 
 class JSNotifcationWrapper : public QObject {
 
@@ -51,6 +82,8 @@ signals:
 };
 
 class DownloadManager;
+class LocalAppManager;
+class AppInfo;
 
 class MainWindow : public QMainWindow
 {
@@ -75,7 +108,9 @@ private:
     NotificationService *notificationService;
     JSNotifcationWrapper *notificationWrapper;
 
+    WebViewService  * webViewService;
     DownloadManager * downloadManager;
+    LocalAppManager * localAppManager;
 
     bool beginDrag;
     QPoint dragPosition;
@@ -88,9 +123,11 @@ private:
     void initTitleBar();
 
     void initDownloadManager();
+    void initLocalAppManager();
     void initNotificationService();
 
     void initMainWebView();
+    void initWebService();
 
     void checkSelfUpdate();
 
@@ -103,6 +140,15 @@ private:
 private slots:
     void downloadComplete();
     void downloadProgress(int nPercentage);
+
+    void webViewLoadStarted();
+    void webViewLoadProgress(int progress);
+    void webViewLoadFinished(bool);
+
+
+    void appInstallBegin(const AppInfo & appInfo);
+    void appInstallProgress(int percentage);
+    void appInstallComplete(const AppInfo & appInfo);
 
     void linkClicked(const QUrl & url);
     void webViewTitleChanged(const QString &title);
