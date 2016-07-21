@@ -155,6 +155,9 @@ private slots:
 
     void notificationClicked(const Notification &notification);
     void notificationReplied(const Notification &notification, const QString &reply);
+
+    void updateCheckingFinished(QString);
+    void updateDownloadFinished(QString);
 };
 
 #endif // MAINWINDOW_H

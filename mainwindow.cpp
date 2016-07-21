@@ -158,14 +158,33 @@ static const QString DEFS_URL = "https://raw.githubusercontent.com/"
                                 "definitions/updates.json";
 void MainWindow::checkSelfUpdate()
 {
+    QSimpleUpdater * updater = QSimpleUpdater::getInstance();
     /* Apply the settings */
-    QSimpleUpdater::getInstance()->setModuleVersion(DEFS_URL, APP_VERSION);
-    QSimpleUpdater::getInstance()->setNotifyOnFinish(DEFS_URL, true);
-    QSimpleUpdater::getInstance()->setNotifyOnUpdate(DEFS_URL, true);
-    QSimpleUpdater::getInstance()->setDownloaderEnabled(DEFS_URL, true);
+    updater->setModuleVersion(DEFS_URL, APP_VERSION);
+    updater->setNotifyOnFinish(DEFS_URL, false);
+    updater->setNotifyOnUpdate(DEFS_URL, false);
+    updater->setDownloaderEnabled(DEFS_URL, true);
 
     /* Check for updates */
-    QSimpleUpdater::getInstance()->checkForUpdates(DEFS_URL);
+    updater->checkForUpdates(DEFS_URL);
+
+    connect (updater, SIGNAL (checkingFinished (QString)),
+             this,    SLOT (updateCheckingFinished (QString)));
+    connect (updater, SIGNAL (downloadFinished (QString, QString)),
+             this,    SLOT (updateDownloadFinished (QString, QString)));
+}
+
+void MainWindow::updateCheckingFinished(QString url)
+{
+    QSimpleUpdater * updater = QSimpleUpdater::getInstance();
+    if(updater->getUpdateAvailable(url)) {
+        qDebug() << __FUNCTION__ << updater->getChangelog(url);
+    }
+}
+
+void MainWindow::updateDownloadFinished(QString url)
+{
+    qDebug() << __FUNCTION__ << url;
 }
 
 bool MainWindow::event(QEvent *event)
