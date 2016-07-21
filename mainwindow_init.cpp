@@ -12,6 +12,7 @@
 
 #include "download/downloadmanager.h"
 #include "util/localappmanager.h"
+#include "QSimpleUpdater.h"
 #include "util/regexputils.h"
 
 void MainWindow::initActions()
@@ -139,6 +140,7 @@ void MainWindow::initWebService()
     channel->registerObject("localAppService", localAppManager);
     channel->registerObject("webViewService", webViewService);
     channel->registerObject("regExpService", &RegExpUtils::Instance());
+    channel->registerObject("updateService", QSimpleUpdater::getInstance());
 
     ui->webView->page()->setWebChannel(channel);
 }

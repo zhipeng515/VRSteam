@@ -161,8 +161,8 @@ void MainWindow::checkSelfUpdate()
     QSimpleUpdater * updater = QSimpleUpdater::getInstance();
     /* Apply the settings */
     updater->setModuleVersion(DEFS_URL, APP_VERSION);
-    updater->setNotifyOnFinish(DEFS_URL, false);
-    updater->setNotifyOnUpdate(DEFS_URL, false);
+    updater->setNotifyOnFinish(DEFS_URL, true);
+    updater->setNotifyOnUpdate(DEFS_URL, true);
     updater->setDownloaderEnabled(DEFS_URL, true);
 
     /* Check for updates */
@@ -177,8 +177,9 @@ void MainWindow::checkSelfUpdate()
 void MainWindow::updateCheckingFinished(QString url)
 {
     QSimpleUpdater * updater = QSimpleUpdater::getInstance();
-    if(updater->getUpdateAvailable(url)) {
+    if(!updater->getNotifyOnUpdate(url) && updater->getUpdateAvailable(url)) {
         qDebug() << __FUNCTION__ << updater->getChangelog(url);
+        updater->startDownload(url);
     }
 }
 
