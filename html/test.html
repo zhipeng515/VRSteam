@@ -55,8 +55,8 @@
                 var regExpService = channel.objects.regExpService;
 
 
-                downloadService.progress.connect(function(progress) {
-                    output("js log: %" + progress);
+                downloadService.progress.connect(function(url, progress) {
+                    output("js log: " + url + "%" + progress);
                 });
 
                 document.getElementById("send").onclick = function() {

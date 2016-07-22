@@ -46,7 +46,8 @@ SOURCES += main.cpp\
     util/localappmanager.cpp \
     util/modelbase.cpp \
     util/models.cpp \
-    mainwindow_init.cpp
+    mainwindow_init.cpp \
+    dialog/versionupdatedialog.cpp
 
 HEADERS  += mainwindow.h \
     notification/notificationservice.h \
@@ -64,11 +65,13 @@ HEADERS  += mainwindow.h \
     util/regexputils.h \
     util/localappmanager.h \
     util/modelbase.h \
-    util/models.h
+    util/models.h \
+    dialog/versionupdatedialog.h
 
 FORMS    += mainwindow.ui \
     dialog/aboutdialog.ui \
-    dialog/PreferencesDialog.ui
+    dialog/PreferencesDialog.ui \
+    dialog/versionupdatedialog.ui
 
 RC_FILE += VRSteam.rc
 

@@ -109,7 +109,6 @@ private:
     JSNotifcationWrapper *notificationWrapper;
 
     WebViewService  * webViewService;
-    DownloadManager * downloadManager;
     LocalAppManager * localAppManager;
 
     bool beginDrag;
@@ -138,8 +137,8 @@ private:
 #endif
 
 private slots:
-    void downloadComplete();
-    void downloadProgress(int nPercentage);
+    void downloadComplete(const QUrl & url);
+    void downloadProgress(const QUrl & url, int nPercentage);
 
     void webViewLoadStarted();
     void webViewLoadProgress(int progress);

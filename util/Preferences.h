@@ -27,7 +27,7 @@ class Preferences {
 
 public:
 
-    static Preferences & Instance();
+    static Preferences * getInstance();
 
     enum NotificationType {
         NotificationTypeNative = 0,
@@ -50,6 +50,9 @@ public:
 
     void setDownloadPath(const QString& path);
     QString getDownloadPath();
+
+    void setSettingPath(const QString& path);
+    QString getSettingPath();
 
 private:
     QSettings settings;

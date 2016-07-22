@@ -27,7 +27,7 @@ DownloadManagerHTTP::~DownloadManagerHTTP()
 }
 
 
-void DownloadManagerHTTP::download(QUrl url, QString localPath)
+void DownloadManagerHTTP::download(const QUrl & url, const QString & localPath)
 {
     qDebug() << "download: URL=" <<url.toString();
 
@@ -120,7 +120,7 @@ void DownloadManagerHTTP::finishedHead()
     foreach (QByteArray header, list)
     {
         QString qsLine = QString(header) + " = " + _pCurrentReply->rawHeader(header);
-        addLine(qsLine);
+        emit addLine(_URL, qsLine);
     }
 
     if (_pCurrentReply->hasRawHeader("Accept-Ranges"))
@@ -157,7 +157,7 @@ void DownloadManagerHTTP::finished()
     _pFile->rename(_qsFileName + ".part", _qsFileName);
     _pFile = NULL;
     _pCurrentReply = 0;
-    emit downloadComplete();
+    emit downloadComplete(_URL);
 }
 
 
@@ -170,7 +170,7 @@ void DownloadManagerHTTP::downloadProgress(qint64 bytesReceived, qint64 bytesTot
     _pFile->write(_pCurrentReply->readAll());
     int nPercentage = static_cast<int>((static_cast<float>(_nDownloadSizeAtPause + bytesReceived) * 100.0) / static_cast<float>(_nDownloadSizeAtPause + bytesTotal));
     qDebug() << nPercentage;
-    emit progress(nPercentage);
+    emit progress(_URL, nPercentage);
 
     _Timer.start(5000);
 }

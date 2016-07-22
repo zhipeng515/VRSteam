@@ -169,7 +169,7 @@ void DownloadManagerFTP::finished()
     delete _pFile;
     _pFile = NULL;
 
-    emit downloadComplete();
+    emit downloadComplete(_URL);
 }
 
 
@@ -254,7 +254,7 @@ void DownloadManagerFTP::rawCommandReply(int replyCode, const QString &detail)
         case 200:
         case 214: // HELP
         {
-            addLine(detail);
+            emit addLine(_URL, detail);
 
             if (detail.contains(QLatin1String("REST"), Qt::CaseSensitive))
             {
@@ -309,7 +309,7 @@ void DownloadManagerFTP::readyRead()
     _nDownloadSize += data.size();
 
     int nPercentage = static_cast<int>((static_cast<float>(_nDownloadSize) * 100.0) / static_cast<float>(_nDownloadTotal));
-    emit progress(nPercentage);
+    emit progress(_URL, nPercentage);
 
     qDebug() << "Download Progress: Received=" << _nDownloadSize <<": Total=" << _nDownloadTotal << " %" << nPercentage;
 

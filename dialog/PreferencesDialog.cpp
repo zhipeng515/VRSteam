@@ -25,22 +25,22 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->notificationButtonGroup->buttons()[Preferences::Instance().getNotificationType()]->setChecked(true);
+    ui->notificationButtonGroup->buttons()[Preferences::getInstance()->getNotificationType()]->setChecked(true);
 
-    ui->locationCheckBox->setChecked(Preferences::Instance().isPermissionGranted(QWebEnginePage::Geolocation));
-    ui->cameraCheckBox->setChecked(Preferences::Instance().isPermissionGranted(QWebEnginePage::MediaVideoCapture));
-    ui->micCheckBox->setChecked(Preferences::Instance().isPermissionGranted(QWebEnginePage::MediaAudioCapture));
+    ui->locationCheckBox->setChecked(Preferences::getInstance()->isPermissionGranted(QWebEnginePage::Geolocation));
+    ui->cameraCheckBox->setChecked(Preferences::getInstance()->isPermissionGranted(QWebEnginePage::MediaVideoCapture));
+    ui->micCheckBox->setChecked(Preferences::getInstance()->isPermissionGranted(QWebEnginePage::MediaAudioCapture));
 
     connect(this, &QDialog::accepted, this, [this]() {
         qDebug() << "saving preferences";
 
         // see http://doc.qt.io/qt-4.8/qbuttongroup.html#addButton
         int type = qAbs(ui->notificationButtonGroup->checkedId()) - 2;
-        Preferences::Instance().setNotificationType((Preferences::NotificationType) type);
+        Preferences::getInstance()->setNotificationType((Preferences::NotificationType) type);
 
-        Preferences::Instance().setPermission(QWebEnginePage::Geolocation, ui->locationCheckBox->isChecked());
-        Preferences::Instance().setPermission(QWebEnginePage::MediaVideoCapture, ui->cameraCheckBox->isChecked());
-        Preferences::Instance().setPermission(QWebEnginePage::MediaAudioCapture, ui->micCheckBox->isChecked());
+        Preferences::getInstance()->setPermission(QWebEnginePage::Geolocation, ui->locationCheckBox->isChecked());
+        Preferences::getInstance()->setPermission(QWebEnginePage::MediaVideoCapture, ui->cameraCheckBox->isChecked());
+        Preferences::getInstance()->setPermission(QWebEnginePage::MediaAudioCapture, ui->micCheckBox->isChecked());
     });
 }
 

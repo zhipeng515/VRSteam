@@ -1,10 +1,10 @@
 ﻿#include "regexputils.h"
 #include <QDebug>
 
-RegExpUtils & RegExpUtils::Instance()
+RegExpUtils * RegExpUtils::getInstance()
 {
     static RegExpUtils regExpUtils;
-    return regExpUtils;
+    return &regExpUtils;
 }
 
 RegExpUtils::RegExpUtils(QObject *parent) : QObject(parent)

@@ -9,7 +9,7 @@ class RegExpUtils : public QObject
 public:
     explicit RegExpUtils(QObject *parent = 0);
 
-    static RegExpUtils & Instance();
+    static RegExpUtils * getInstance();
 
 signals:
 

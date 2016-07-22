@@ -23,12 +23,12 @@ public:
     virtual ~DownloadManagerFTP();
 
 signals:
-    void addLine(QString qsLine);
-    void downloadComplete();
-    void progress(int nPercentage);
+    void addLine(const QUrl& url, const QString & qsLine);
+    void downloadComplete(const QUrl& url);
+    void progress(const QUrl& url, const int nPercentage);
 
 public slots:
-    void download(QUrl url, QString localPath);
+    void download(const QUrl & url, const QString & localPath);
     void pause();
     void resume();
 

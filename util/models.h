@@ -24,6 +24,9 @@ Q_OBJECT
 
 MetaPropertyPublicSet(int, id)
 MetaPropertyPublicSet(QString, name)
+MetaPropertyPublicSet(QString, iconUrl)
+MetaPropertyPublicSet(QString, downloadUrl)
+MetaPropertyPublicSet(QString, localInstallFile)
 MetaPropertyPublicSet(QString, installPath)
 MetaPropertyPublicSet(QString, launcher)
 MetaPropertyPublicSet(QString, uninstallLauncher)

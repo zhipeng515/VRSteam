@@ -23,27 +23,31 @@ class DownloadManager : public QObject
 
 public:
     explicit DownloadManager(QObject *parent = 0);
+    ~DownloadManager();
+    static DownloadManager* getInstance(){
+        static DownloadManager downloadManager;
+        return &downloadManager;
+    }
 
 signals:
-    void addLine(QString qsLine);
-    void progress(int nPercentage);
-    void downloadComplete();
+    void addLine(const QUrl & url, const QString & qsLine);
+    void progress(const QUrl & url, const int nPercentage);
+    void downloadComplete(const QUrl & url);
 
 public slots:
-    void download(QUrl url, QString localPath);
-    void pause();
-    void resume();
+    void download(const QUrl & url, const QString & localPath);
+    void pause(const QUrl & url);
+    void resume(const QUrl & url);
 
 private slots:
-    void localAddLine(QString qsLine);
-    void localProgress(int nPercentage);
-    void localDownloadComplete();
+    void localAddLine(const QUrl & url, const QString & qsLine);
+    void localProgress(const QUrl & url, const int nPercentage);
+    void localDownloadComplete(const QUrl & url);
 
 private:
-    QUrl _URL;
-    DownloadManagerHTTP *_pHTTP;
+    QMap<QUrl, DownloadManagerHTTP*> httpDownloads;
 #if QT_VERSION < 0x050000
-    DownloadManagerFTP *_pFTP;
+    QList<DownloadManagerFTP*> ftpDownloads;
 #endif
 };
 

@@ -22,6 +22,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "QSimpleUpdater.h"
+#include "dialog/versionupdatedialog.h"
 
 
 JSNotifcationWrapper::JSNotifcationWrapper(NotificationService *service, QObject *parent)
@@ -154,15 +155,15 @@ void MainWindow::readSettings()
 }
 
 static const QString DEFS_URL = "https://raw.githubusercontent.com/"
-                                "alex-spataru/QSimpleUpdater/master/tutorial/"
+                                "zhipeng515/QSimpleUpdater/master/tutorial/"
                                 "definitions/updates.json";
 void MainWindow::checkSelfUpdate()
 {
     QSimpleUpdater * updater = QSimpleUpdater::getInstance();
     /* Apply the settings */
     updater->setModuleVersion(DEFS_URL, APP_VERSION);
-    updater->setNotifyOnFinish(DEFS_URL, true);
-    updater->setNotifyOnUpdate(DEFS_URL, true);
+    updater->setNotifyOnFinish(DEFS_URL, false);
+    updater->setNotifyOnUpdate(DEFS_URL, false);
     updater->setDownloaderEnabled(DEFS_URL, true);
 
     /* Check for updates */
@@ -178,8 +179,11 @@ void MainWindow::updateCheckingFinished(QString url)
 {
     QSimpleUpdater * updater = QSimpleUpdater::getInstance();
     if(!updater->getNotifyOnUpdate(url) && updater->getUpdateAvailable(url)) {
-        qDebug() << __FUNCTION__ << updater->getChangelog(url);
-        updater->startDownload(url);
+        VersionUpdateDialog updateDialog(url, this);
+        if(updateDialog.exec() == QDialog::Accepted) {
+            qDebug() << __FUNCTION__ << updater->getChangelog(url);
+            updater->startDownload(url);
+        }
     }
 }
 

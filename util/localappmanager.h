@@ -4,6 +4,7 @@
 #include <QObject>
 
 class AppInfo;
+class DownloadManager;
 
 class LocalAppManager : public QObject
 {
@@ -16,10 +17,15 @@ signals:
     void appInstallProgress(int percentage);
     void appInstallComplete(const AppInfo & app);
 
-public slots:
-    void installApp(const AppInfo & app);
-    void uninstallApp(const AppInfo & app);
+    void downloadComplete(const QUrl & url);
+    void downloadProgress(const QUrl & url, int nPercentage);
+
+public slots:    
+    void downloadApp(const int id, const QString & downloadUrl, const QString & appName);
+    void installApp(const int appId);
+    void uninstallApp(const int appId);
     bool isAppInstalled(const int appId);
+    bool isAppNeedUpdated(const int appId, const QString & latestVersion);
 };
 
 #endif // LOCALAPPMANAGER_H

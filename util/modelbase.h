@@ -2,6 +2,10 @@
 #define MODELBASE_H
 
 #include "JObject.h"
+#include <QFile>
+#include <QMap>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 #define DECLARE_MODEL_BEGIN(modelclass, baseclass) \
 \
@@ -15,48 +19,81 @@ public: \
     static inline modelclass * getModel(const int id) { \
         auto model = modelsMap.find(id); \
         if(model != modelsMap.end()) \
-            return (*model).second; \
+            return model.value(); \
         return &modelclass::invalidModel; \
     } \
 \
     static inline modelclass * getModel(const QString & name){ \
         for( auto model = modelsMap.begin(); model != modelsMap.end(); model++) {\
-            if((*model).second->name() == name) \
-                return (*model).second; \
+            if(model.value()->name() == name) \
+                return model.value(); \
         } \
         return &modelclass::invalidModel; \
     } \
 \
     static inline void addModel(const int id, modelclass * model) { \
-        modelsMap.insert(std::map<const int, modelclass*>::value_type(id, model)); \
+        modelsMap.insert(id, model); \
     } \
 \
     static inline void removeModel(const int id) { \
         auto model = modelsMap.find(id); \
         if(model != modelsMap.end()) { \
-            delete (*model).second; \
+            delete model.value(); \
             modelsMap.erase(model); \
         } \
     } \
 \
     static inline void removeAllModels() { \
-        for( auto model = modelsMap.begin(); model != modelsMap.end(); model++) { \
-            delete (*model).second; \
-        } \
+        qDeleteAll(modelsMap); \
         modelsMap.clear(); \
     } \
+    static inline void saveModels(const QString & localFile) { \
+        QByteArray jsonByteArray("{\n"); \
+        for( auto model = modelsMap.begin(); model != modelsMap.end(); model++) {\
+            jsonByteArray.append("\"" + QString::number(model.key()) + "\"" + ": "); \
+            jsonByteArray.append(model.value()->exportToJson()); \
+            jsonByteArray.append(",\n"); \
+        } \
+        if(jsonByteArray.endsWith(",\n")) \
+            jsonByteArray.remove(jsonByteArray.count()-2, 2); \
+        jsonByteArray.append('}'); \
+        QFile jsonFile(localFile); \
+        jsonFile.open(QIODevice::WriteOnly); \
+        jsonFile.write(jsonByteArray); \
+        jsonFile.close(); \
+    } \
+    static inline void loadModels(const QString & localFile) { \
+        QFile jsonFile(localFile); \
+        jsonFile.open(QIODevice::ReadOnly); \
+        QByteArray jsonByteArray = jsonFile.readAll(); \
+        jsonFile.close(); \
 \
-    static inline std::map<const int, modelclass*> & models(){ return modelsMap; } \
+        QJsonParseError error; \
+        QJsonDocument jsonDocument = QJsonDocument::fromJson(jsonByteArray, &error); \
+        if (error.error == QJsonParseError::NoError) { \
+            if (jsonDocument.isObject()) { \
+                QVariantMap jsonMap = jsonDocument.object().toVariantMap(); \
+                for(auto json = jsonMap.begin(); json != jsonMap.end(); json++) \
+                { \
+                    modelclass * model = new modelclass; \
+                    model->importFromVariant(json.value()); \
+                    modelclass::addModel(json.key().toInt(), model); \
+                } \
+            } \
+        } \
+    } \
+\
+    static inline QMap<int, modelclass*> & models(){ return modelsMap; } \
     static modelclass invalidModel; \
 \
 private: \
-    static std::map<const int, modelclass*> modelsMap;
+    static QMap<int, modelclass*> modelsMap;
 
 #define DECLARE_MODEL_END(modelclass) \
 };
 
 #define IMPLMENT_MODEL(modelclass) \
 modelclass modelclass::invalidModel; \
-std::map<const int, modelclass*> modelclass::modelsMap;
+QMap<int, modelclass*> modelclass::modelsMap;
 
 #endif // MODELBASE_H

@@ -101,10 +101,8 @@ void MainWindow::initMainWebView()
 
 void MainWindow::initDownloadManager()
 {
-    downloadManager = new DownloadManager(this);
-
-    connect(downloadManager, SIGNAL(downloadComplete()), this, SLOT(downloadComplete()));
-    connect(downloadManager, SIGNAL(progress(int)), this, SLOT(downloadProgress(int)));
+    connect(DownloadManager::getInstance(), SIGNAL(downloadComplete(const QUrl &)), this, SLOT(downloadComplete(const QUrl &)));
+    connect(DownloadManager::getInstance(), SIGNAL(progress(const QUrl &, int)), this, SLOT(downloadProgress(const QUrl &, int)));
 }
 
 void MainWindow::initLocalAppManager()
@@ -136,10 +134,10 @@ void MainWindow::initWebService()
 
     auto channel = new QWebChannel(this);
     channel->registerObject("notificationService", notificationWrapper);
-    channel->registerObject("downloadService", downloadManager);
+    channel->registerObject("downloadService", DownloadManager::getInstance());
     channel->registerObject("localAppService", localAppManager);
     channel->registerObject("webViewService", webViewService);
-    channel->registerObject("regExpService", &RegExpUtils::Instance());
+    channel->registerObject("regExpService", RegExpUtils::getInstance());
     channel->registerObject("updateService", QSimpleUpdater::getInstance());
 
     ui->webView->page()->setWebChannel(channel);

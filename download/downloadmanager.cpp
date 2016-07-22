@@ -7,92 +7,116 @@
 
 DownloadManager::DownloadManager(QObject *parent) :
     QObject(parent)
-#if QT_VERSION < 0x050000
-    , _pFTP(NULL)
-#endif
-    , _pHTTP(NULL)
 {
 }
 
+DownloadManager::~DownloadManager()
+{
+#if QT_VERSION < 0x050000
+    qDeleteAll(ftpDownloads);
+    ftpDownloads.clear();
+#endif
+    qDeleteAll(httpDownloads);
+    httpDownloads.clear();
+}
 
-void DownloadManager::download(QUrl url, QString localPath)
+void DownloadManager::download(const QUrl & url, const QString & localPath)
 {
     qDebug() << __FUNCTION__ << "(" << url.toString() << ")";
 
-    _URL = url;
-
 #if QT_VERSION < 0x050000
     if (_URL.scheme().toLower() == "ftp")
     {
-        _pFTP = new DownloadManagerFTP(this);
+        DownloadManagerFTP * pFTP = ftpDownloads[url];
+        if (pFTP == NULL) {
 
-        connect(_pFTP, SIGNAL(addLine(QString)), this, SLOT(localAddLine(QString)));
-        connect(_pFTP, SIGNAL(progress(int)), this, SLOT(localProgress(int)));
-        connect(_pFTP, SIGNAL(downloadComplete()), this, SLOT(localDownloadComplete()));
+            pFTP = new DownloadManagerFTP(this);
 
-        _pFTP->download(_URL, localPath);
+            connect(pHTTP, SIGNAL(addLine(const QUrl&, const QString&)), this, SLOT(localAddLine(const QUrl&, const QString&)));
+            connect(pHTTP, SIGNAL(progress(const QUrl&,int)), this, SLOT(localProgress(const QUrl&, int)));
+            connect(pHTTP, SIGNAL(downloadComplete(const QUrl&)), this, SLOT(localDownloadComplete(const QUrl&,)));
+
+            ftpDownloads.insert(url, pFTP);
+        }
+        pFTP->download(url, localPath);
     }
     else
 #endif
     {
-        _pHTTP = new DownloadManagerHTTP(this);
+        DownloadManagerHTTP * pHTTP = httpDownloads[url];
+        if (pHTTP == NULL) {
+            pHTTP = new DownloadManagerHTTP(this);
 
-        connect(_pHTTP, SIGNAL(addLine(QString)), this, SLOT(localAddLine(QString)));
-        connect(_pHTTP, SIGNAL(progress(int)), this, SLOT(localProgress(int)));
-        connect(_pHTTP, SIGNAL(downloadComplete()), this, SLOT(localDownloadComplete()));
+            connect(pHTTP, SIGNAL(addLine(const QUrl&, const QString&)), this, SLOT(localAddLine(const QUrl&, const QString&)));
+            connect(pHTTP, SIGNAL(progress(const QUrl&,int)), this, SLOT(localProgress(const QUrl&, int)));
+            connect(pHTTP, SIGNAL(downloadComplete(const QUrl&)), this, SLOT(localDownloadComplete(const QUrl&,)));
 
-        _pHTTP->download(_URL, localPath);
+            httpDownloads.insert(url, pHTTP);
+        }
+        pHTTP->download(url, localPath);
     }
 }
 
 
-void DownloadManager::pause()
+void DownloadManager::pause(const QUrl & url)
 {
     qDebug() << __FUNCTION__;
 
 #if QT_VERSION < 0x050000
     if (_URL.scheme().toLower() == "ftp")
     {
-        _pFTP->pause();
+        DownloadManagerFTP * pFTP = ftpDownloads[url];
+        if (pFTP == NULL) {
+            pFTP->pause();
+        }
     }
     else
 #endif
     {
-        _pHTTP->pause();
+        DownloadManagerHTTP * pHTTP = httpDownloads[url];
+        if (pHTTP == NULL) {
+            pHTTP->pause();
+        }
     }
 }
 
 
-void DownloadManager::resume()
+void DownloadManager::resume(const QUrl & url)
 {
     qDebug() << __FUNCTION__;
 
 #if QT_VERSION < 0x050000
     if (_URL.scheme().toLower() == "ftp")
     {
-        _pFTP->resume();
+        DownloadManagerFTP * pFTP = ftpDownloads[url];
+        if (pFTP == NULL) {
+            pFTP->resume();
+        }
     }
     else
 #endif
     {
-        _pHTTP->resume();
+        DownloadManagerHTTP * pHTTP = httpDownloads[url];
+        if (pHTTP == NULL) {
+            pHTTP->resume();
+        }
     }
 }
 
 
-void DownloadManager::localAddLine(QString qsLine)
+void DownloadManager::localAddLine(const QUrl& url, const QString & qsLine)
 {
-    emit addLine(qsLine);
+    emit addLine(url, qsLine);
 }
 
 
-void DownloadManager::localProgress(int nPercentage)
+void DownloadManager::localProgress(const QUrl& url, const int nPercentage)
 {
-    emit progress(nPercentage);
+    emit progress(url, nPercentage);
 }
 
 
-void DownloadManager::localDownloadComplete()
+void DownloadManager::localDownloadComplete(const QUrl& url)
 {
-    emit downloadComplete();
+    emit downloadComplete(url);
 }

@@ -19,10 +19,10 @@
 #include <QStandardPaths>
 #include <QDir>
 
-Preferences & Preferences::Instance()
+Preferences * Preferences::getInstance()
 {
     static Preferences preferences;
-    return preferences;
+    return &preferences;
 }
 
 Preferences::Preferences()
@@ -33,6 +33,10 @@ Preferences::Preferences()
     if(getDownloadPath() == "") {
         QString downloadPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "/VRSteam/Downloads/";
         setDownloadPath(downloadPath);
+    }
+    if(getSettingPath() == "") {
+        QString settingPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "/VRSteam/Settings/";
+        setSettingPath(settingPath);
     }
 }
 
@@ -82,6 +86,25 @@ QString Preferences::getDownloadPath()
 {
     settings.beginGroup("path");
     auto path = settings.value("download", "").toString();
+    settings.endGroup();
+    return path;
+}
+
+void Preferences::setSettingPath(const QString& path)
+{
+    QDir downloadDir;
+    if(!downloadDir.exists(path))
+        downloadDir.mkpath(path);
+
+    settings.beginGroup("path");
+    settings.setValue("setting", path);
+    settings.endGroup();
+}
+
+QString Preferences::getSettingPath()
+{
+    settings.beginGroup("path");
+    auto path = settings.value("setting", "").toString();
     settings.endGroup();
     return path;
 }
