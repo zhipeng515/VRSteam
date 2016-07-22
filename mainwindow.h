@@ -109,7 +109,6 @@ private:
     JSNotifcationWrapper *notificationWrapper;
 
     WebViewService  * webViewService;
-    LocalAppManager * localAppManager;
 
     bool beginDrag;
     QPoint dragPosition;
@@ -156,7 +155,7 @@ private slots:
     void notificationReplied(const Notification &notification, const QString &reply);
 
     void updateCheckingFinished(QString);
-    void updateDownloadFinished(QString);
+    void updateDownloadFinished(QString, QString);
 };
 
 #endif // MAINWINDOW_H

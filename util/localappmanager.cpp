@@ -10,6 +10,12 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+LocalAppManager * LocalAppManager::getInstance()
+{
+    static LocalAppManager localAppManager;
+    return &localAppManager;
+}
+
 LocalAppManager::LocalAppManager(QObject *parent) : QObject(parent)
 {
     connect(DownloadManager::getInstance(), SIGNAL(downloadComplete(const QUrl&)),

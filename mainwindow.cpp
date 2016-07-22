@@ -187,9 +187,9 @@ void MainWindow::updateCheckingFinished(QString url)
     }
 }
 
-void MainWindow::updateDownloadFinished(QString url)
+void MainWindow::updateDownloadFinished(QString url, QString filepath)
 {
-    qDebug() << __FUNCTION__ << url;
+    qDebug() << __FUNCTION__ << url << filepath;
 }
 
 bool MainWindow::event(QEvent *event)

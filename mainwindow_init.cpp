@@ -107,11 +107,12 @@ void MainWindow::initDownloadManager()
 
 void MainWindow::initLocalAppManager()
 {
-    localAppManager = new LocalAppManager(this);
-
-    connect(localAppManager, SIGNAL(appInstallBegin(const AppInfo &)), this, SLOT(appInstallBegin(const AppInfo &)));
-    connect(localAppManager, SIGNAL(appInstallProgress(int)), this, SLOT(appInstallProgress(int)));
-    connect(localAppManager, SIGNAL(appInstallComplete(const AppInfo &)), this, SLOT(appInstallComplete(const AppInfo &)));
+    connect(LocalAppManager::getInstance(), SIGNAL(appInstallBegin(const AppInfo &)),
+            this, SLOT(appInstallBegin(const AppInfo &)));
+    connect(LocalAppManager::getInstance(), SIGNAL(appInstallProgress(int)),
+            this, SLOT(appInstallProgress(int)));
+    connect(LocalAppManager::getInstance(), SIGNAL(appInstallComplete(const AppInfo &)),
+            this, SLOT(appInstallComplete(const AppInfo &)));
 }
 
 void MainWindow::initNotificationService() {
@@ -134,9 +135,10 @@ void MainWindow::initWebService()
 
     auto channel = new QWebChannel(this);
     channel->registerObject("notificationService", notificationWrapper);
-    channel->registerObject("downloadService", DownloadManager::getInstance());
-    channel->registerObject("localAppService", localAppManager);
     channel->registerObject("webViewService", webViewService);
+
+    channel->registerObject("downloadService", DownloadManager::getInstance());
+    channel->registerObject("localAppService", LocalAppManager::getInstance());
     channel->registerObject("regExpService", RegExpUtils::getInstance());
     channel->registerObject("updateService", QSimpleUpdater::getInstance());
 

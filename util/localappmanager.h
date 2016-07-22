@@ -11,6 +11,7 @@ class LocalAppManager : public QObject
     Q_OBJECT
 public:
     explicit LocalAppManager(QObject *parent = 0);
+    static LocalAppManager * getInstance();
 
 signals:
     void appInstallBegin(const AppInfo & app);
