@@ -96,7 +96,8 @@ void MainWindow::initMainWebView()
     connect(ui->webView->page(), SIGNAL(linkClicked(const QUrl&)), this, SLOT(linkClicked(const QUrl&)));
 
 //    ui->webView->load(QUrl("https://web.whatsapp.com"));
-    ui->webView->setUrl(QUrl("qrc:/html/test.html"));
+//    ui->webView->setUrl(QUrl("qrc:/html/test.html"));
+    ui->webView->setUrl(QUrl("http://10.205.20.112:8080/Steam/"));
 }
 
 void MainWindow::initDownloadManager()
