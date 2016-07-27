@@ -4,3 +4,6 @@
 [submodule "3rd-party/QSimpleUpdater"]
 	path = 3rd-party/QSimpleUpdater
 	url = https://github.com/zhipeng515/QSimpleUpdater.git
+[submodule "3rd-party/http"]
+	path = 3rd-party/http
+	url = https://github.com/zhipeng515/http.git

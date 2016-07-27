@@ -98,6 +98,8 @@ public:
 protected:
     bool event(QEvent *event);
 
+    virtual void showEvent(QShowEvent *event);
+
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
@@ -127,13 +129,15 @@ private:
     void initMainWebView();
     void initWebService();
 
-    void checkSelfUpdate();
-
 #ifdef Q_OS_OSX
     void nativeSetup();
 #else
     void nativeSetup() {}
 #endif
+
+public slots:
+    void checkSelfUpdate();
+    void checkActivitys();
 
 private slots:
     void downloadComplete(const QUrl & url);

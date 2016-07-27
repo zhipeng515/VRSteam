@@ -46,7 +46,9 @@ SOURCES += main.cpp\
     util/localappmanager.cpp \
     util/modelbase.cpp \
     util/models.cpp \
-    mainwindow_init.cpp
+    mainwindow_init.cpp \
+    dialog/activitydialog.cpp \
+    util/urlservice.cpp
 
 HEADERS  += mainwindow.h \
     notification/notificationservice.h \
@@ -64,11 +66,14 @@ HEADERS  += mainwindow.h \
     util/regexputils.h \
     util/localappmanager.h \
     util/modelbase.h \
-    util/models.h
+    util/models.h \
+    dialog/activitydialog.h \
+    util/urlservice.h
 
 FORMS    += mainwindow.ui \
     dialog/aboutdialog.ui \
-    dialog/PreferencesDialog.ui
+    dialog/PreferencesDialog.ui \
+    dialog/activitydialog.ui
 
 RC_FILE += VRSteam.rc
 
@@ -100,6 +105,7 @@ RESOURCES += \
 
 include ($$PWD/3rd-party/QSimpleUpdater/QSimpleUpdater.pri)
 include ($$PWD/3rd-party/QtJson/src/QtJson.pri)
+include ($$PWD/3rd-party/http/http.pri)
 
 DISTFILES += \
     README.MD

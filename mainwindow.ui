@@ -48,7 +48,7 @@
       <height>31</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="hBoxLayout">
+    <layout class="QHBoxLayout" name="titleLayout">
      <property name="spacing">
       <number>6</number>
      </property>
@@ -66,8 +66,8 @@
       </widget>
      </item>
      <item>
-      <widget class="QWidget" name="menuWidget" native="true">
-       <widget class="QLabel" name="label">
+      <widget class="QWidget" name="titleWidget" native="true">
+       <widget class="QLabel" name="title">
         <property name="geometry">
          <rect>
           <x>248</x>

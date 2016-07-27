@@ -1,36 +1,35 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QDesktopServices>
-#include "util/regexputils.h"
-#include "download/downloadmanager.h"
 #include "util/Preferences.h"
 #include "util/models.h"
+#include "util/urlservice.h"
+
+void MainWindow::webViewTitleChanged(const QString &title)
+{
+    qDebug() << "Title changed to: " << title;
+
+//    QString badge = "";
+//    QRegExp regex("\\(([0-9]+)\\) VRSteam");
+
+//    if(regex.indexIn(title) > -1) {
+//        badge = regex.cap(1);
+//    }
+
+//    if(badge.isEmpty())
+//        setWindowTitle("VRSteam");
+//    else
+//        setWindowTitle((badge.toInt() == 1 ? tr("%1 unread message") : tr("%1 unread messages")).arg(badge) + " - VRSteam");
+
+//    notificationService->setApplicationBadge(badge);
+
+    ui->title->setText(title);
+}
 
 void MainWindow::linkClicked(const QUrl & url)
 {
     qDebug() << __FUNCTION__  + url.toString();
 
-    QString strUrl = url.toString();
-
-    if(RegExpUtils::getInstance()->isUrl(strUrl)) {
-        if(!Preferences::getInstance()->isInBlacklist(strUrl))
-           QDesktopServices::openUrl(url);
-    }
-    else {
-        // Example : vrst://download?http://www.sina.com.cn/vrsteam.exe
-        // Example : vrst://open?http://www.sina.com.cn
-        QStringList customProtocol = RegExpUtils::getInstance()->matchCustomUrl(strUrl);
-        if(customProtocol.count() > 2) {
-            if(customProtocol[0] == "vrst") {
-                if(customProtocol[1] == "download" && RegExpUtils::getInstance()->isUrl(customProtocol[2])) {
-                    DownloadManager::getInstance()->download(customProtocol[2], Preferences::getInstance()->getDownloadPath());
-                }
-                else if(customProtocol[1] == "open" && RegExpUtils::getInstance()->isUrl(customProtocol[2])) {
-                    ui->webView->load(customProtocol[2]);
-                }
-            }
-        }
-    }
+    URLService::getInstance()->handleURL(url, ui->webView);
 }
 
 void MainWindow::downloadComplete(const QUrl & url)

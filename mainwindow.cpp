@@ -18,10 +18,15 @@
 #include <QRegExp>
 #include <QSettings>
 #include <QMessageBox>
+#include <QPropertyAnimation>
+#include <QDesktopWidget>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "QSimpleUpdater.h"
+#include "dialog/activitydialog.h"
+#include "util/models.h"
+#include "3rd-party/http/src/http.h"
 
 
 JSNotifcationWrapper::JSNotifcationWrapper(NotificationService *service, QObject *parent)
@@ -84,6 +89,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowIcon(QIcon(":/artwork/icon/icon256.png"));
 #endif
     checkSelfUpdate();
+    checkActivitys();
 
     initActions();
     initMenus();
@@ -102,25 +108,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::webViewTitleChanged(const QString &title)
-{
-    qDebug() << "Title changed to: " << title;
-
-    QString badge = "";
-    QRegExp regex("\\(([0-9]+)\\) VRSteam");
-
-    if(regex.indexIn(title) > -1) {
-        badge = regex.cap(1);
-    }
-
-    if(badge.isEmpty())
-        setWindowTitle("VRSteam");
-    else
-        setWindowTitle((badge.toInt() == 1 ? tr("%1 unread message") : tr("%1 unread messages")).arg(badge) + " - VRSteam");
-
-    notificationService->setApplicationBadge(badge);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -174,6 +161,24 @@ void MainWindow::checkSelfUpdate()
              this,    SLOT (updateDownloadFinished (QString, QString)));
 }
 
+void MainWindow::checkActivitys()
+{
+    auto reply = Http::instance().get(QUrl("http://www.baidu.com/"));
+    connect(static_cast<HttpReply*>(reply), &HttpReply::data, [&](const QByteArray &bytes){
+        ActivityInfo activityInfo;
+        activityInfo.importFromJson(bytes);
+        if(activityInfo.urls().count() > 0){
+            auto activityDialog = new ActivityDialog(this);
+            activityDialog->setActivityUrls(activityInfo.urls());
+            activityDialog->show();
+        }
+    });
+    connect(static_cast<HttpReply*>(reply), &HttpReply::error, [&](const QString &message){
+        qDebug() << message;
+    });
+
+}
+
 void MainWindow::updateCheckingFinished(QString url)
 {
     QSimpleUpdater * updater = QSimpleUpdater::getInstance();
@@ -215,6 +220,31 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 {
     Q_UNUSED(event);
     beginDrag = false;
+}
+
+void MainWindow::showEvent(QShowEvent *event)
+{
+//    QDesktopWidget* desktopWidget = QApplication::desktop();
+//    QPropertyAnimation *animation = new QPropertyAnimation(this, "geometry");
+//    animation->setDuration(2000);
+//    int w = desktopWidget->availableGeometry().width();
+//    int h = desktopWidget->availableGeometry().height();
+//    animation->setStartValue(QRect(w /2 - size().width()/2,
+//                                   0,
+//                                   size().width(), size().height()));
+//    animation->setEndValue(QRect(w /2 - size().width()/2,
+//                                 h / 2 - size().height() / 2,
+//                                 size().width(), size().height()));
+//    animation->setEasingCurve(QEasingCurve::OutElastic);
+//    animation->start();
+
+//    QPropertyAnimation *animation = new QPropertyAnimation(this, "windowOpacity");
+//    animation->setDuration(2000);
+//    animation->setStartValue(0);
+//    animation->setEndValue(1);
+//    animation->start();
+
+    QMainWindow::showEvent(event);
 }
 
 void MainWindow::notificationClicked(const Notification &notification)

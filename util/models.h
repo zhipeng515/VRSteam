@@ -36,4 +36,14 @@ MetaPropertyPublicSet(int, installSize)
 
 DECLARE_MODEL_END(AppInfo)
 
+DECLARE_MODEL_BEGIN(ActivityInfo, JObject)
+
+Q_OBJECT
+
+MetaPropertyPublicSet(int, id)
+MetaPropertyPublicSet(QString, name)
+MetaPropertyPublicSet(QStringList, urls)
+
+DECLARE_MODEL_END(ActivityInfo)
+
 #endif // MODELS_H
