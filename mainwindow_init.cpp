@@ -8,12 +8,14 @@
 
 #include "dialog/AboutDialog.h"
 #include "dialog/PreferencesDialog.h"
+#include "dialog/downloaddialog.h"
 #include "view/webpage.h"
 
 #include "download/downloadmanager.h"
 #include "util/localappmanager.h"
 #include "QSimpleUpdater.h"
 #include "util/regexputils.h"
+#include "util/httpservice.h"
 
 void MainWindow::initActions()
 {
@@ -81,8 +83,20 @@ void MainWindow::initTitleBar()
 
     QPixmap closePixmap = this->style()->standardPixmap(QStyle::SP_TitleBarCloseButton);
     ui->closeWindow->setIcon(closePixmap);
-    connect(ui->closeWindow, &QToolButton::clicked, []{
-        QApplication::quit();
+    connect(ui->closeWindow, &QToolButton::clicked, [&]{
+        QPropertyAnimation *animation = new QPropertyAnimation(this, "windowOpacity");
+        connect(animation, SIGNAL(finished()), qApp, SLOT(quit()));
+        animation->setDuration(500);
+        animation->setStartValue(1);
+        animation->setEndValue(0);
+        animation->start();
+    });
+
+    QPixmap downloadPixmap = this->style()->standardPixmap(QStyle::SP_ArrowDown);
+    ui->openDownload->setIcon(downloadPixmap);
+    connect(ui->openDownload, &QToolButton::clicked, [&]{
+        DownloadDialog * downloadDialog = new DownloadDialog(this);
+        downloadDialog->show();
     });
 }
 void MainWindow::initMainWebView()
@@ -95,9 +109,7 @@ void MainWindow::initMainWebView()
     connect(webViewService, &WebViewService::loadFinished, this, &MainWindow::webViewLoadFinished);
     connect(ui->webView->page(), SIGNAL(linkClicked(const QUrl&)), this, SLOT(linkClicked(const QUrl&)));
 
-//    ui->webView->load(QUrl("https://web.whatsapp.com"));
-//    ui->webView->setUrl(QUrl("qrc:/html/test.html"));
-    ui->webView->setUrl(QUrl("http://10.205.20.112:8080/Steam/"));
+    ui->webView->setUrl(HttpService::getInstance()->getUrl("home"));
 }
 
 void MainWindow::initDownloadManager()
@@ -144,4 +156,9 @@ void MainWindow::initWebService()
     channel->registerObject("updateService", QSimpleUpdater::getInstance());
 
     ui->webView->page()->setWebChannel(channel);
+}
+
+void MainWindow::initHttpService()
+{
+    HttpService::getInstance();
 }

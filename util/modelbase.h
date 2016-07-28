@@ -12,10 +12,13 @@
 class modelclass : public baseclass \
 { \
 public: \
-    explicit modelclass(QObject *parent = 0) : baseclass(parent){} \
+    Q_INVOKABLE explicit modelclass(QObject *parent = 0) : baseclass(parent){} \
 \
     inline bool isValid(){ return this != &modelclass::invalidModel; } \
 \
+    virtual void initAfterConstruct() { \
+        modelclass::addModel(id(), this); \
+    } \
     static inline modelclass * getModel(const int id) { \
         auto model = modelsMap.find(id); \
         if(model != modelsMap.end()) \

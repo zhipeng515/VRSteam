@@ -26,7 +26,7 @@
 #include "QSimpleUpdater.h"
 #include "dialog/activitydialog.h"
 #include "util/models.h"
-#include "3rd-party/http/src/http.h"
+#include "util/httpservice.h"
 
 
 JSNotifcationWrapper::JSNotifcationWrapper(NotificationService *service, QObject *parent)
@@ -88,19 +88,20 @@ MainWindow::MainWindow(QWidget *parent) :
 #ifndef Q_OS_OSX
     setWindowIcon(QIcon(":/artwork/icon/icon256.png"));
 #endif
-    checkSelfUpdate();
-    checkActivitys();
-
     initActions();
     initMenus();
     initTitleBar();
 
     initMainWebView();
     initWebService();
+    initHttpService();
 
     readSettings();
 
     nativeSetup();
+
+    checkSelfUpdate();
+    checkActivitys();
 }
 
 
@@ -163,20 +164,21 @@ void MainWindow::checkSelfUpdate()
 
 void MainWindow::checkActivitys()
 {
-    auto reply = Http::instance().get(QUrl("http://www.baidu.com/"));
-    connect(static_cast<HttpReply*>(reply), &HttpReply::data, [&](const QByteArray &bytes){
-        ActivityInfo activityInfo;
-        activityInfo.importFromJson(bytes);
-        if(activityInfo.urls().count() > 0){
-            auto activityDialog = new ActivityDialog(this);
-            activityDialog->setActivityUrls(activityInfo.urls());
-            activityDialog->show();
+    QMap<QString, QString> params;
+    HttpService::getInstance()->request("activity", params,
+        [&](const QByteArray &bytes){
+            ActivityInfo activityInfo;
+            activityInfo.importFromJson(bytes);
+            if(activityInfo.urls().count() > 0){
+                auto activityDialog = new ActivityDialog(this);
+                activityDialog->setActivityUrls(activityInfo.urls());
+                activityDialog->show();
+            }
+        },
+        [&](const QString &message){
+            qDebug() << message;
         }
-    });
-    connect(static_cast<HttpReply*>(reply), &HttpReply::error, [&](const QString &message){
-        qDebug() << message;
-    });
-
+    );
 }
 
 void MainWindow::updateCheckingFinished(QString url)

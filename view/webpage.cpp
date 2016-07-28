@@ -22,13 +22,14 @@
 #include "webpage.h"
 #include "webview.h"
 
-bool OpenUrlWebPage::acceptNavigationRequest(const QUrl &url, NavigationType type, bool /*isMainFrame*/)
+bool OpenUrlWebPage::acceptNavigationRequest(const QUrl &url, NavigationType type, bool isMainFrame)
 {
     qDebug() << "Navigation request for url: " << url;
     if(type == QWebEnginePage::NavigationTypeLinkClicked) {
         emit linkClicked(url);
+        return false;
     }
-    return false;
+    return QWebEnginePage::acceptNavigationRequest(url, type, isMainFrame);
 }
 
 WebPage::WebPage(QWebEngineProfile *profile, QWidget *parent)
@@ -40,7 +41,7 @@ WebPage::WebPage(QWebEngineProfile *profile, QWidget *parent)
 
 WebPage::~WebPage()
 {
-    openUrlWebPage->deleteLater();
+    delete openUrlWebPage;
 }
 
 bool WebPage::acceptNavigationRequest(const QUrl &url, NavigationType type, bool isMainFrame)

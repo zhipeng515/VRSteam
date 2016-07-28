@@ -48,7 +48,10 @@ SOURCES += main.cpp\
     util/models.cpp \
     mainwindow_init.cpp \
     dialog/activitydialog.cpp \
-    util/urlservice.cpp
+    util/urlservice.cpp \
+    util/httpservice.cpp \
+    dialog/downloaddialog.cpp \
+    dialog/downloaditemwidget.cpp
 
 HEADERS  += mainwindow.h \
     notification/notificationservice.h \
@@ -68,12 +71,17 @@ HEADERS  += mainwindow.h \
     util/modelbase.h \
     util/models.h \
     dialog/activitydialog.h \
-    util/urlservice.h
+    util/urlservice.h \
+    util/httpservice.h \
+    dialog/downloaddialog.h \
+    dialog/downloaditemwidget.h
 
 FORMS    += mainwindow.ui \
     dialog/aboutdialog.ui \
     dialog/PreferencesDialog.ui \
-    dialog/activitydialog.ui
+    dialog/activitydialog.ui \
+    dialog/downloaddialog.ui \
+    dialog/downloaditemwidget.ui
 
 RC_FILE += VRSteam.rc
 
@@ -108,4 +116,5 @@ include ($$PWD/3rd-party/QtJson/src/QtJson.pri)
 include ($$PWD/3rd-party/http/http.pri)
 
 DISTFILES += \
-    README.MD
+    README.MD \
+    html/activitys.json

@@ -4,5 +4,7 @@
         <file>artwork/icon/SinaVR.png</file>
         <file>js/qwebchannel.js</file>
         <file>html/test.html</file>
+        <file>html/activitys.json</file>
+        <file>config/api.json</file>
     </qresource>
 </RCC>

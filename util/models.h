@@ -46,4 +46,27 @@ MetaPropertyPublicSet(QStringList, urls)
 
 DECLARE_MODEL_END(ActivityInfo)
 
+DECLARE_MODEL_BEGIN(ApiInfo, JObject)
+
+Q_OBJECT
+
+MetaPropertyPublicSet(int, id)
+MetaPropertyPublicSet(QString, name)
+MetaPropertyPublicSet(QString, path)
+MetaPropertyPublicSet(QString, operation)
+
+DECLARE_MODEL_END(ActivityInfo)
+
+DECLARE_MODEL_BEGIN(ApiInfos, JObject)
+
+Q_OBJECT
+
+MetaPropertyPublicSet(int, id)
+MetaPropertyPublicSet(QString, name)
+MetaPropertyPublicSet(QString, host)
+MetaPropertyPublicSet_Ptr_List(ApiInfo, apis)
+
+DECLARE_MODEL_END(ActivityInfo)
+
+
 #endif // MODELS_H

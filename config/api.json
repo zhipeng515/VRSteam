@@ -1,0 +1,19 @@
+{
+    "id":"0",
+    "name": "api",
+    "host": "http://10.205.20.112:8080/Steam/",
+    "apis": [
+        {
+            "id": "1",
+            "name": "home",
+            "path": "",
+            "operation": "GET"
+        },
+        {
+            "id": "2",
+            "name": "activity",
+            "path": "Activity",
+            "operation" : "GET"
+        }
+    ]
+}

@@ -128,6 +128,7 @@ private:
 
     void initMainWebView();
     void initWebService();
+    void initHttpService();
 
 #ifdef Q_OS_OSX
     void nativeSetup();
