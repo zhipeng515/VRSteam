@@ -32,11 +32,14 @@ void DownloadManager::download(const QUrl & url, const QString & localPath)
 
             pFTP = new DownloadManagerFTP(this);
 
-            connect(pFTP, SIGNAL(addLine(const QUrl&, const QString&)), this, SLOT(localAddLine(const QUrl&, const QString&)));
-            connect(pFTP, SIGNAL(progress(const QUrl&,int)), this, SLOT(localProgress(const QUrl&, int)));
-            connect(pFTP, SIGNAL(complete(const QUrl&)), this, SLOT(localDownloadComplete(const QUrl&,)));
-            connect(pFTP, SIGNAL(error(const QUrl&, QNetworkReply::NetworkError)), this, SIGNAL(error(const QUrl&, QNetworkReply::NetworkError)));
-            connect(pFTP, SIGNAL(timeout(const QUrl&)), this, SIGNAL(timeout(const QUrl&)));
+            connect(pFTP, SIGNAL(addLine(const QUrl&, const QString&)), this, SIGNAL(addLine(const QUrl&, const QString&)));
+            connect(pFTP, SIGNAL(downloadProgress(const QUrl&,int)), this, SIGNAL(downloadProgress(const QUrl&, int)));
+            connect(pFTP, SIGNAL(downloadBegin(const QUrl&)), this, SIGNAL(downloadBegin(const QUrl&,)));
+            connect(pFTP, SIGNAL(downloadPause(const QUrl&)), this, SIGNAL(downloadPause(const QUrl&,)));
+            connect(pFTP, SIGNAL(downloadResume(const QUrl&)), this, SIGNAL(downloadResume(const QUrl&,)));
+            connect(pFTP, SIGNAL(downloadComplete(const QUrl&)), this, SIGNAL(downloadComplete(const QUrl&,)));
+            connect(pFTP, SIGNAL(downloadError(const QUrl&, QNetworkReply::NetworkError)), this, SIGNAL(downloadError(const QUrl&, QNetworkReply::NetworkError)));
+            connect(pFTP, SIGNAL(downloadTimeout(const QUrl&)), this, SIGNAL(downloadTimeout(const QUrl&)));
 
             ftpDownloads.insert(url, pFTP);
         }
@@ -49,11 +52,14 @@ void DownloadManager::download(const QUrl & url, const QString & localPath)
         if (pHTTP == NULL) {
             pHTTP = new DownloadManagerHTTP(this);
 
-            connect(pHTTP, SIGNAL(addLine(const QUrl&, const QString&)), this, SLOT(localAddLine(const QUrl&, const QString&)));
-            connect(pHTTP, SIGNAL(progress(const QUrl&,int)), this, SLOT(localProgress(const QUrl&, int)));
-            connect(pHTTP, SIGNAL(complete(const QUrl&)), this, SLOT(localDownloadComplete(const QUrl&,)));
-            connect(pHTTP, SIGNAL(error(const QUrl&, QNetworkReply::NetworkError)), this, SIGNAL(error(const QUrl&, QNetworkReply::NetworkError)));
-            connect(pHTTP, SIGNAL(timeout(const QUrl&)), this, SIGNAL(timeout(const QUrl&)));
+            connect(pHTTP, SIGNAL(addLine(const QUrl&, const QString&)), this, SIGNAL(addLine(const QUrl&, const QString&)));
+            connect(pHTTP, SIGNAL(downloadProgress(const QUrl&,int)), this, SIGNAL(downloadProgress(const QUrl&, int)));
+            connect(pHTTP, SIGNAL(downloadBegin(const QUrl&)), this, SIGNAL(downloadBegin(const QUrl&,)));
+            connect(pHTTP, SIGNAL(downloadPause(const QUrl&)), this, SIGNAL(downloadPause(const QUrl&,)));
+            connect(pHTTP, SIGNAL(downloadResume(const QUrl&)), this, SIGNAL(downloadResume(const QUrl&,)));
+            connect(pHTTP, SIGNAL(downloadComplete(const QUrl&)), this, SIGNAL(downloadComplete(const QUrl&,)));
+            connect(pHTTP, SIGNAL(downloadError(const QUrl&, QNetworkReply::NetworkError)), this, SIGNAL(downloadError(const QUrl&, QNetworkReply::NetworkError)));
+            connect(pHTTP, SIGNAL(downloadTimeout(const QUrl&)), this, SIGNAL(downloadTimeout(const QUrl&)));
 
             httpDownloads.insert(url, pHTTP);
         }
@@ -126,21 +132,4 @@ bool DownloadManager::isDownloading(const QUrl & url)
         }
     }
     return false;
-}
-
-
-void DownloadManager::localAddLine(const QUrl& url, const QString & qsLine)
-{
-    emit addLine(url, qsLine);
-}
-
-void DownloadManager::localProgress(const QUrl& url, const int nPercentage)
-{
-    emit progress(url, nPercentage);
-}
-
-
-void DownloadManager::localDownloadComplete(const QUrl& url)
-{
-    emit complete(url);
 }

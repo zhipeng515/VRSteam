@@ -51,6 +51,8 @@ void DownloadManagerHTTP::download(const QUrl & url, const QString & localPath)
 
     connect(_pCurrentReply, SIGNAL(finished()), this, SLOT(finishedHead()));
     connect(_pCurrentReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(error(QNetworkReply::NetworkError)));
+
+    emit downloadBegin(_URL);
 }
 
 
@@ -73,6 +75,8 @@ void DownloadManagerHTTP::pause()
     _pCurrentReply = 0;
     _nDownloadSizeAtPause = _nDownloadSize;
     _nDownloadSize = 0;
+
+    emit downloadPause(_URL);
 }
 
 
@@ -81,6 +85,7 @@ void DownloadManagerHTTP::resume()
     qDebug() << "resume() = " << _nDownloadSizeAtPause;
 
     download();
+    emit downloadResume(_URL);
 }
 
 
@@ -157,7 +162,7 @@ void DownloadManagerHTTP::finished()
     _pFile->rename(_qsFileName + ".part", _qsFileName);
     _pFile = NULL;
     _pCurrentReply = 0;
-    emit complete(_URL);
+    emit downloadComplete(_URL);
 }
 
 
@@ -170,7 +175,7 @@ void DownloadManagerHTTP::downloadProgress(qint64 bytesReceived, qint64 bytesTot
     _pFile->write(_pCurrentReply->readAll());
     int nPercentage = static_cast<int>((static_cast<float>(_nDownloadSizeAtPause + bytesReceived) * 100.0) / static_cast<float>(_nDownloadSizeAtPause + bytesTotal));
     qDebug() << nPercentage;
-    emit progress(_URL, nPercentage);
+    emit downloadProgress(_URL, nPercentage);
 
     _Timer.start(5000);
 }
@@ -183,12 +188,12 @@ bool DownloadManagerHTTP::isDownloading()
 void DownloadManagerHTTP::error(QNetworkReply::NetworkError code)
 {
     qDebug() << __FUNCTION__ << "(" << code << ")";
-    emit error(_URL, code);
+    emit downloadError(_URL, code);
 }
 
 
 void DownloadManagerHTTP::timeout()
 {
     qDebug() << __FUNCTION__;
-    emit timeout(_URL);
+    emit downloadTimeout(_URL);
 }

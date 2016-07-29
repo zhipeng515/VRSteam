@@ -21,6 +21,8 @@ public slots:
     void appDownloadComplete(const QUrl & url);
     void appDownloadProgress(const QUrl & url, int nPercentage);
     void appDownloadError(const QUrl & url, QNetworkReply::NetworkError code);
+    void appDownloadPause(const QUrl & url);
+    void appDownloadResume(const QUrl & url);
     void appDownloadTimeout(const QUrl & url);
 
     void updateInfo(const QString &info, QStyle::StandardPixmap pixmap);

@@ -31,21 +31,19 @@ public:
 
 signals:
     void addLine(const QUrl & url, const QString & qsLine);
-    void progress(const QUrl & url, const int nPercentage);
-    void complete(const QUrl & url);
-    void error(const QUrl& url, QNetworkReply::NetworkError code);
-    void timeout(const QUrl& url);
+    void downloadProgress(const QUrl & url, const int nPercentage);
+    void downloadBegin(const QUrl & url);
+    void downloadPause(const QUrl & url);
+    void downloadResume(const QUrl & url);
+    void downloadComplete(const QUrl & url);
+    void downloadError(const QUrl& url, QNetworkReply::NetworkError code);
+    void downloadTimeout(const QUrl& url);
 
 public slots:
     void download(const QUrl & url, const QString & localPath);
     void pause(const QUrl & url);
     void resume(const QUrl & url);
     bool isDownloading(const QUrl & url);
-
-private slots:
-    void localAddLine(const QUrl & url, const QString & qsLine);
-    void localProgress(const QUrl & url, const int nPercentage);
-    void localDownloadComplete(const QUrl & url);
 
 private:
     QMap<QUrl, DownloadManagerHTTP*> httpDownloads;

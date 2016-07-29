@@ -24,6 +24,10 @@ DownloadItemWidget::DownloadItemWidget(const int id, QWidget *parent) :
             this, SLOT(appDownloadError(const QUrl&, QNetworkReply::NetworkError)));
     connect(LocalAppManager::getInstance(), SIGNAL(appDownloadTimeout(const QUrl&)),
             this, SLOT(appDownloadTimeout(const QUrl&)));
+    connect(LocalAppManager::getInstance(), SIGNAL(appDownloadPause(const QUrl&)),
+            this, SLOT(appDownloadPause(const QUrl&)));
+    connect(LocalAppManager::getInstance(), SIGNAL(appDownloadResume(const QUrl&)),
+            this, SLOT(appDownloadResume(const QUrl&)));
 
     AppInfo * appInfo = AppInfo::getModel(appId);
     if(appInfo->isValid()) {
@@ -71,17 +75,34 @@ void DownloadItemWidget::appDownloadTimeout(const QUrl & url)
     }
 }
 
+void DownloadItemWidget::appDownloadPause(const QUrl & url)
+{
+    AppInfo * appInfo = AppInfo::getModel(appId);
+    if(appInfo->isValid() && QUrl(appInfo->downloadUrl()) == url) {
+        ui->progressBar->setVisible(false);
+        updateInfo(tr("Pause"), QStyle::SP_MediaPlay);
+    }
+}
+
+void DownloadItemWidget::appDownloadResume(const QUrl & url)
+{
+    AppInfo * appInfo = AppInfo::getModel(appId);
+    if(appInfo->isValid() && QUrl(appInfo->downloadUrl()) == url) {
+        ui->progressBar->setVisible(false);
+        updateInfo(tr("Downloading"), QStyle::SP_MediaPlay);
+    }
+}
+
 void DownloadItemWidget::on_operatorButton_clicked()
 {
     AppInfo * appInfo = AppInfo::getModel(appId);
     if(appInfo->isValid()) {
         if(DownloadManager::getInstance()->isDownloading(appInfo->downloadUrl())) {
             DownloadManager::getInstance()->pause(appInfo->downloadUrl());
-            updateInfo(tr("Pause"), QStyle::SP_MediaPlay);
         }
         else {
             DownloadManager::getInstance()->resume(appInfo->downloadUrl());
-            updateInfo(tr("Downloading"), QStyle::SP_MediaPause);
+            ui->progressBar->setVisible(true);
         }
     }
 }

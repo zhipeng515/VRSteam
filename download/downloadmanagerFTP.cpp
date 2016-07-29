@@ -96,6 +96,8 @@ void DownloadManagerFTP::download(QUrl url, QString localPath)
     _Timer.setSingleShot(true);
     connect(&_Timer, SIGNAL(timeout()), this, SLOT(timeout()));
     _Timer.start();
+
+    emit downloadBegin(_URL);
 }
 
 
@@ -115,6 +117,8 @@ void DownloadManagerFTP::pause()
     _pFile->flush();
     _nDownloadSizeAtPause = _nDownloadSize;
     _nDownloadSize = 0;
+
+    emit downloadPause(_URL);
 }
 
 
@@ -123,6 +127,8 @@ void DownloadManagerFTP::resume()
     qDebug() << __FUNCTION__ << "(): _nDownloadSizeAtPause = " << _nDownloadSizeAtPause;
 
     download();
+
+    emit downloadResume(_URL);
 }
 
 
@@ -176,14 +182,14 @@ void DownloadManagerFTP::finished()
 void DownloadManagerFTP::error(QNetworkReply::NetworkError code)
 {
     qDebug() << __FUNCTION__ << "(" << code << ")";
-    emit timeout(_URL, code);
+    emit downloadError(_URL, code);
 }
 
 
 void DownloadManagerFTP::timeout()
 {
     qDebug() << __FUNCTION__;
-    emit timeout(_URL);
+    emit downloadTimeout(_URL);
 }
 
 bool DownloadManagerFTP::isDownloading()
@@ -315,7 +321,7 @@ void DownloadManagerFTP::readyRead()
     _nDownloadSize += data.size();
 
     int nPercentage = static_cast<int>((static_cast<float>(_nDownloadSize) * 100.0) / static_cast<float>(_nDownloadTotal));
-    emit progress(_URL, nPercentage);
+    emit downloadProgress(_URL, nPercentage);
 
     qDebug() << "Download Progress: Received=" << _nDownloadSize <<": Total=" << _nDownloadTotal << " %" << nPercentage;
 

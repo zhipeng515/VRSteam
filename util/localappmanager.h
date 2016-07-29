@@ -22,6 +22,8 @@ signals:
     void appInstallComplete(const AppInfo & app);
 
     void appDownloadBegin(const QUrl & url);
+    void appDownloadPause(const QUrl & url);
+    void appDownloadResume(const QUrl & url);
     void appDownloadComplete(const QUrl & url);
     void appDownloadProgress(const QUrl & url, int nPercentage);
     void appDownloadError(const QUrl & url, QNetworkReply::NetworkError code);

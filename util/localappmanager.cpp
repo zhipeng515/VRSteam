@@ -19,11 +19,17 @@ LocalAppManager * LocalAppManager::getInstance()
 LocalAppManager::LocalAppManager(QObject *parent) : QObject(parent)
 {
     connect(DownloadManager::getInstance(), SIGNAL(downloadComplete(const QUrl&)),
-            this, SLOT(appDownloadComplete(const QUrl&)));
-    connect(DownloadManager::getInstance(), SIGNAL(error(const QUrl&, QNetworkReply::NetworkError)),
+            this, SLOT(downloadComplete(const QUrl&)));
+    connect(DownloadManager::getInstance(), SIGNAL(downloadError(const QUrl&, QNetworkReply::NetworkError)),
             this, SIGNAL(appDownloadError(const QUrl&, QNetworkReply::NetworkError)));
-    connect(DownloadManager::getInstance(), SIGNAL(timeout(const QUrl&)),
+    connect(DownloadManager::getInstance(), SIGNAL(downloadTimeout(const QUrl&)),
             this, SIGNAL(appDownloadTimeout(const QUrl&)));
+    connect(DownloadManager::getInstance(), SIGNAL(downloadPause(const QUrl&)),
+            this, SIGNAL(appDownloadPause(const QUrl&)));
+    connect(DownloadManager::getInstance(), SIGNAL(downloadResume(const QUrl&)),
+            this, SIGNAL(appDownloadResume(const QUrl&)));
+    connect(DownloadManager::getInstance(), SIGNAL(downloadBegin(const QUrl&)),
+            this, SIGNAL(appDownloadBegin(const QUrl&)));
 
     // Test code
 //    downloadApp(0, "http://www.sina.com.cn", "abc");
@@ -47,8 +53,6 @@ void LocalAppManager::downloadApp(const int id, const QString & downloadUrl, con
     DownloadManager::getInstance()->download(downloadUrl, Preferences::getInstance()->getSettingPath());
 
     downloadApps.append(appInfo);
-
-    emit appDownloadBegin(QUrl(downloadUrl));
 }
 
 void LocalAppManager::installApp(const int appId)

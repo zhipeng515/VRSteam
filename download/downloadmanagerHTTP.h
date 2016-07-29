@@ -20,10 +20,13 @@ public:
 
 signals:
     void addLine(const QUrl& url, const QString & qsLine);
-    void complete(const QUrl& url);
-    void progress(const QUrl& url, const int nPercentage);
-    void error(const QUrl& url, QNetworkReply::NetworkError code);
-    void timeout(const QUrl& url);
+    void downloadProgress(const QUrl & url, const int nPercentage);
+    void downloadBegin(const QUrl & url);
+    void downloadPause(const QUrl & url);
+    void downloadResume(const QUrl & url);
+    void downloadComplete(const QUrl & url);
+    void downloadError(const QUrl& url, QNetworkReply::NetworkError code);
+    void downloadTimeout(const QUrl& url);
 
 public slots:
     void download(const QUrl & url, const QString & localPath);
