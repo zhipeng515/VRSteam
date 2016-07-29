@@ -19,9 +19,11 @@ LocalAppManager * LocalAppManager::getInstance()
 LocalAppManager::LocalAppManager(QObject *parent) : QObject(parent)
 {
     connect(DownloadManager::getInstance(), SIGNAL(downloadComplete(const QUrl&)),
-            this, SLOT(downloadComplete(const QUrl&)));
-    connect(DownloadManager::getInstance(), SIGNAL(progress(const QUrl& , int)),
-            this, SLOT(downloadProgress(const QUrl&, int)));
+            this, SLOT(appDownloadComplete(const QUrl&)));
+    connect(DownloadManager::getInstance(), SIGNAL(error(const QUrl&, QNetworkReply::NetworkError)),
+            this, SIGNAL(appDownloadError(const QUrl&, QNetworkReply::NetworkError)));
+    connect(DownloadManager::getInstance(), SIGNAL(timeout(const QUrl&)),
+            this, SIGNAL(appDownloadTimeout(const QUrl&)));
 
     // Test code
 //    downloadApp(0, "http://www.sina.com.cn", "abc");
@@ -67,7 +69,17 @@ void LocalAppManager::uninstallApp(const int appId)
 {
     AppInfo * appInfo = AppInfo::getModel(appId);
     if(appInfo->isValid()) {
-        QFileInfo fileInfo(appInfo->uninstallLauncher());
+        QFileInfo fileInfo(appInfo->installPath() + appInfo->uninstallLauncher());
+        if(fileInfo.isExecutable())
+            QDesktopServices::openUrl(fileInfo.absoluteFilePath());
+    }
+}
+
+void LocalAppManager::launchApp(const int appId)
+{
+    AppInfo * appInfo = AppInfo::getModel(appId);
+    if(appInfo->isValid()) {
+        QFileInfo fileInfo(appInfo->launcher());
         if(fileInfo.isExecutable())
             QDesktopServices::openUrl(fileInfo.absoluteFilePath());
     }
@@ -83,11 +95,19 @@ bool LocalAppManager::isAppInstalled(const int appId)
     return false;
 }
 
-bool LocalAppManager::isDownloading(const int appId)
+bool LocalAppManager::isAppDownloading(const int appId)
 {
     AppInfo * appInfo = AppInfo::getModel(appId);
     if(appInfo->isValid()) {
         return downloadApps.contains(appInfo);
+    }
+    return false;
+}
+
+bool LocalAppManager::isAppRunning(const int appId)
+{
+    AppInfo * appInfo = AppInfo::getModel(appId);
+    if(appInfo->isValid()) {
     }
     return false;
 }
@@ -109,12 +129,6 @@ void LocalAppManager::downloadComplete(const QUrl & url)
         downloadApps.removeOne(appInfo);
         emit appDownloadComplete(url);
     }
-}
-
-void LocalAppManager::downloadProgress(const QUrl & url, int nPercentage)
-{
-    qDebug() << __FUNCTION__ << url << "(%" << nPercentage << ")";
-    emit appDownloadProgress(url, nPercentage);
 }
 
 AppInfo * LocalAppManager::getDownloadApp(const QUrl & url)

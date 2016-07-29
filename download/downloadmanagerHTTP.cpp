@@ -157,7 +157,7 @@ void DownloadManagerHTTP::finished()
     _pFile->rename(_qsFileName + ".part", _qsFileName);
     _pFile = NULL;
     _pCurrentReply = 0;
-    emit downloadComplete(_URL);
+    emit complete(_URL);
 }
 
 
@@ -175,14 +175,20 @@ void DownloadManagerHTTP::downloadProgress(qint64 bytesReceived, qint64 bytesTot
     _Timer.start(5000);
 }
 
+bool DownloadManagerHTTP::isDownloading()
+{
+    return _Timer.isActive();
+}
 
 void DownloadManagerHTTP::error(QNetworkReply::NetworkError code)
 {
     qDebug() << __FUNCTION__ << "(" << code << ")";
+    emit error(_URL, code);
 }
 
 
 void DownloadManagerHTTP::timeout()
 {
     qDebug() << __FUNCTION__;
+    emit timeout(_URL);
 }

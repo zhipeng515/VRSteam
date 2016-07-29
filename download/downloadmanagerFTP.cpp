@@ -176,14 +176,20 @@ void DownloadManagerFTP::finished()
 void DownloadManagerFTP::error(QNetworkReply::NetworkError code)
 {
     qDebug() << __FUNCTION__ << "(" << code << ")";
+    emit timeout(_URL, code);
 }
 
 
 void DownloadManagerFTP::timeout()
 {
     qDebug() << __FUNCTION__;
+    emit timeout(_URL);
 }
 
+bool DownloadManagerFTP::isDownloading()
+{
+    return _Timer.isActive();
+}
 
 void DownloadManagerFTP::stateChanged(int state)
 {

@@ -153,6 +153,7 @@ void MainWindow::initWebService()
     channel->registerObject("localAppService", LocalAppManager::getInstance());
     channel->registerObject("regExpService", RegExpUtils::getInstance());
     channel->registerObject("updateService", QSimpleUpdater::getInstance());
+    channel->registerObject("httpService", HttpService::getInstance());
 
     ui->webView->page()->setWebChannel(channel);
 }

@@ -2,7 +2,7 @@
 #define LOCALAPPMANAGER_H
 
 #include <QObject>
-
+#include <QNetworkReply>
 class AppInfo;
 class DownloadManager;
 
@@ -24,17 +24,22 @@ signals:
     void appDownloadBegin(const QUrl & url);
     void appDownloadComplete(const QUrl & url);
     void appDownloadProgress(const QUrl & url, int nPercentage);
+    void appDownloadError(const QUrl & url, QNetworkReply::NetworkError code);
+    void appDownloadTimeout(const QUrl & url);
+
 
 public slots:    
     void downloadApp(const int id, const QString & downloadUrl, const QString & appName);
     void installApp(const int appId);
+    void launchApp(const int appId);
     void uninstallApp(const int appId);
+
     bool isAppInstalled(const int appId);
-    bool isDownloading(const int appId);
+    bool isAppDownloading(const int appId);
+    bool isAppRunning(const int appId);
     bool isAppNeedUpdated(const int appId, const QString & latestVersion);
 
     void downloadComplete(const QUrl & url);
-    void downloadProgress(const QUrl & url, int nPercentage);
 
     AppInfo * getDownloadApp(const QUrl & url);
     QList<AppInfo*>  getDownloadApps(){

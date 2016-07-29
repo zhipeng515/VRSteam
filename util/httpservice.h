@@ -12,7 +12,6 @@ public:
     explicit HttpService(QObject *parent = 0);
     static HttpService * getInstance();
 
-    QUrl getUrl(const QString & api);
     bool request(const QString & api, const QMap<QString, QString>& params,
                  const std::function<void(const QByteArray &)> &success,
                  const std::function<void(const QString &)> &failed);
@@ -20,6 +19,7 @@ public:
 signals:
 
 public slots:
+    QUrl getUrl(const QString & api);
 
 private:
     ApiInfos apiInfos;

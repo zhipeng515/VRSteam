@@ -2,6 +2,8 @@
 #define DOWNLOADITEMWIDGET_H
 
 #include <QWidget>
+#include <QNetworkReply>
+#include <QStyle>
 
 namespace Ui {
 class DownloadItemWidget;
@@ -18,6 +20,10 @@ public:
 public slots:
     void appDownloadComplete(const QUrl & url);
     void appDownloadProgress(const QUrl & url, int nPercentage);
+    void appDownloadError(const QUrl & url, QNetworkReply::NetworkError code);
+    void appDownloadTimeout(const QUrl & url);
+
+    void updateInfo(const QString &info, QStyle::StandardPixmap pixmap);
 
 private slots:
     void on_operatorButton_clicked();

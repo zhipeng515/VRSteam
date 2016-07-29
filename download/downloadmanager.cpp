@@ -32,9 +32,11 @@ void DownloadManager::download(const QUrl & url, const QString & localPath)
 
             pFTP = new DownloadManagerFTP(this);
 
-            connect(pHTTP, SIGNAL(addLine(const QUrl&, const QString&)), this, SLOT(localAddLine(const QUrl&, const QString&)));
-            connect(pHTTP, SIGNAL(progress(const QUrl&,int)), this, SLOT(localProgress(const QUrl&, int)));
-            connect(pHTTP, SIGNAL(downloadComplete(const QUrl&)), this, SLOT(localDownloadComplete(const QUrl&,)));
+            connect(pFTP, SIGNAL(addLine(const QUrl&, const QString&)), this, SLOT(localAddLine(const QUrl&, const QString&)));
+            connect(pFTP, SIGNAL(progress(const QUrl&,int)), this, SLOT(localProgress(const QUrl&, int)));
+            connect(pFTP, SIGNAL(complete(const QUrl&)), this, SLOT(localDownloadComplete(const QUrl&,)));
+            connect(pFTP, SIGNAL(error(const QUrl&, QNetworkReply::NetworkError)), this, SIGNAL(error(const QUrl&, QNetworkReply::NetworkError)));
+            connect(pFTP, SIGNAL(timeout(const QUrl&)), this, SIGNAL(timeout(const QUrl&)));
 
             ftpDownloads.insert(url, pFTP);
         }
@@ -49,7 +51,9 @@ void DownloadManager::download(const QUrl & url, const QString & localPath)
 
             connect(pHTTP, SIGNAL(addLine(const QUrl&, const QString&)), this, SLOT(localAddLine(const QUrl&, const QString&)));
             connect(pHTTP, SIGNAL(progress(const QUrl&,int)), this, SLOT(localProgress(const QUrl&, int)));
-            connect(pHTTP, SIGNAL(downloadComplete(const QUrl&)), this, SLOT(localDownloadComplete(const QUrl&,)));
+            connect(pHTTP, SIGNAL(complete(const QUrl&)), this, SLOT(localDownloadComplete(const QUrl&,)));
+            connect(pHTTP, SIGNAL(error(const QUrl&, QNetworkReply::NetworkError)), this, SIGNAL(error(const QUrl&, QNetworkReply::NetworkError)));
+            connect(pHTTP, SIGNAL(timeout(const QUrl&)), this, SIGNAL(timeout(const QUrl&)));
 
             httpDownloads.insert(url, pHTTP);
         }
@@ -103,12 +107,32 @@ void DownloadManager::resume(const QUrl & url)
     }
 }
 
+bool DownloadManager::isDownloading(const QUrl & url)
+{
+#if QT_VERSION < 0x050000
+    if (_URL.scheme().toLower() == "ftp")
+    {
+        DownloadManagerFTP * pFTP = ftpDownloads[url];
+        if (pFTP == NULL) {
+            return pFTP->isDownloading();
+        }
+    }
+    else
+#endif
+    {
+        DownloadManagerHTTP * pHTTP = httpDownloads[url];
+        if (pHTTP == NULL) {
+            return pHTTP->isDownloading();
+        }
+    }
+    return false;
+}
+
 
 void DownloadManager::localAddLine(const QUrl& url, const QString & qsLine)
 {
     emit addLine(url, qsLine);
 }
-
 
 void DownloadManager::localProgress(const QUrl& url, const int nPercentage)
 {
@@ -118,5 +142,5 @@ void DownloadManager::localProgress(const QUrl& url, const int nPercentage)
 
 void DownloadManager::localDownloadComplete(const QUrl& url)
 {
-    emit downloadComplete(url);
+    emit complete(url);
 }
