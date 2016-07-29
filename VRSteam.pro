@@ -51,7 +51,8 @@ SOURCES += main.cpp\
     util/urlservice.cpp \
     util/httpservice.cpp \
     dialog/downloaddialog.cpp \
-    dialog/downloaditemwidget.cpp
+    view/downloaditemwidget.cpp \
+    view/networkiconlabel.cpp
 
 HEADERS  += mainwindow.h \
     notification/notificationservice.h \
@@ -74,14 +75,15 @@ HEADERS  += mainwindow.h \
     util/urlservice.h \
     util/httpservice.h \
     dialog/downloaddialog.h \
-    dialog/downloaditemwidget.h
+    view/downloaditemwidget.h \
+    view/networkiconlabel.h
 
 FORMS    += mainwindow.ui \
     dialog/aboutdialog.ui \
     dialog/PreferencesDialog.ui \
     dialog/activitydialog.ui \
     dialog/downloaddialog.ui \
-    dialog/downloaditemwidget.ui
+    view/downloaditemwidget.ui
 
 RC_FILE += VRSteam.rc
 

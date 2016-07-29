@@ -7,6 +7,7 @@ namespace Ui {
 class DownloadDialog;
 }
 
+class AppInfo;
 class DownloadDialog : public QDialog
 {
     Q_OBJECT
@@ -14,6 +15,10 @@ class DownloadDialog : public QDialog
 public:
     explicit DownloadDialog(QWidget *parent = 0);
     ~DownloadDialog();
+
+public slots:
+    void appDownloadBegin(const QUrl & url);
+    void addDownloadItem(const AppInfo * appInfo);
 
 private:
     Ui::DownloadDialog *ui;

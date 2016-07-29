@@ -89,7 +89,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowIcon(QIcon(":/artwork/icon/icon256.png"));
 #endif
     initActions();
-    initMenus();
+//    initMenus();
     initTitleBar();
 
     initMainWebView();

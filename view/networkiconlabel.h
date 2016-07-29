@@ -1,9 +1,9 @@
 #ifndef NETWORKICONLABEL_H
 #define NETWORKICONLABEL_H
 
-#include <QWidget>
+#include <QLabel>
 
-class NetworkIconLabel : public QWidget
+class NetworkIconLabel : public QLabel
 {
     Q_OBJECT
 public:
@@ -12,6 +12,7 @@ public:
 signals:
 
 public slots:
+    void setUrl(const QUrl &url);
 };
 
 #endif // NETWORKICONLABEL_H

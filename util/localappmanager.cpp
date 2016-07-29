@@ -19,9 +19,9 @@ LocalAppManager * LocalAppManager::getInstance()
 LocalAppManager::LocalAppManager(QObject *parent) : QObject(parent)
 {
     connect(DownloadManager::getInstance(), SIGNAL(downloadComplete(const QUrl&)),
-            this, SIGNAL(downloadComplete(const QUrl&)));
+            this, SLOT(downloadComplete(const QUrl&)));
     connect(DownloadManager::getInstance(), SIGNAL(progress(const QUrl& , int)),
-            this, SIGNAL(downloadProgress(const QUrl&, int)));
+            this, SLOT(downloadProgress(const QUrl&, int)));
 
     // Test code
 //    downloadApp(0, "http://www.sina.com.cn", "abc");
@@ -43,6 +43,10 @@ void LocalAppManager::downloadApp(const int id, const QString & downloadUrl, con
     AppInfo::addModel(appInfo->id(), appInfo);
 
     DownloadManager::getInstance()->download(downloadUrl, Preferences::getInstance()->getSettingPath());
+
+    downloadApps.append(appInfo);
+
+    emit appDownloadBegin(QUrl(downloadUrl));
 }
 
 void LocalAppManager::installApp(const int appId)
@@ -79,6 +83,15 @@ bool LocalAppManager::isAppInstalled(const int appId)
     return false;
 }
 
+bool LocalAppManager::isDownloading(const int appId)
+{
+    AppInfo * appInfo = AppInfo::getModel(appId);
+    if(appInfo->isValid()) {
+        return downloadApps.contains(appInfo);
+    }
+    return false;
+}
+
 bool LocalAppManager::isAppNeedUpdated(const int appId, const QString & latestVersion)
 {
     AppInfo * appInfo = AppInfo::getModel(appId);
@@ -87,3 +100,30 @@ bool LocalAppManager::isAppNeedUpdated(const int appId, const QString & latestVe
     }
     return false;
 }
+
+void LocalAppManager::downloadComplete(const QUrl & url)
+{
+    qDebug() << __FUNCTION__ << url;
+    AppInfo * appInfo = getDownloadApp(url);
+    if(appInfo) {
+        downloadApps.removeOne(appInfo);
+        emit appDownloadComplete(url);
+    }
+}
+
+void LocalAppManager::downloadProgress(const QUrl & url, int nPercentage)
+{
+    qDebug() << __FUNCTION__ << url << "(%" << nPercentage << ")";
+    emit appDownloadProgress(url, nPercentage);
+}
+
+AppInfo * LocalAppManager::getDownloadApp(const QUrl & url)
+{
+    for(auto appInfo = downloadApps.begin(); appInfo != downloadApps.end(); appInfo++) {
+        if(QUrl((*appInfo)->downloadUrl()) == url) {
+            return *appInfo;
+        }
+    }
+    return nullptr;
+}
+

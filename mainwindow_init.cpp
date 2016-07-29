@@ -95,7 +95,7 @@ void MainWindow::initTitleBar()
     QPixmap downloadPixmap = this->style()->standardPixmap(QStyle::SP_ArrowDown);
     ui->openDownload->setIcon(downloadPixmap);
     connect(ui->openDownload, &QToolButton::clicked, [&]{
-        DownloadDialog * downloadDialog = new DownloadDialog(this);
+        static DownloadDialog * downloadDialog = new DownloadDialog(this);
         downloadDialog->show();
     });
 }
@@ -114,8 +114,7 @@ void MainWindow::initMainWebView()
 
 void MainWindow::initDownloadManager()
 {
-    connect(DownloadManager::getInstance(), SIGNAL(downloadComplete(const QUrl &)), this, SLOT(downloadComplete(const QUrl &)));
-    connect(DownloadManager::getInstance(), SIGNAL(progress(const QUrl &, int)), this, SLOT(downloadProgress(const QUrl &, int)));
+    DownloadManager::getInstance();
 }
 
 void MainWindow::initLocalAppManager()
