@@ -96,7 +96,16 @@ void MainWindow::initTitleBar()
     ui->openDownload->setIcon(downloadPixmap);
     connect(ui->openDownload, &QToolButton::clicked, [&]{
         static DownloadDialog * downloadDialog = new DownloadDialog(this);
-        downloadDialog->show();
+        if(!downloadDialog->isHidden()) {
+            downloadDialog->close();
+        }
+        else {
+            QPoint showPos = QWidget::mapToGlobal(ui->openDownload->pos());
+            showPos.setX(showPos.x() - (downloadDialog->size().width() - ui->openDownload->size().width()) / 2);
+            showPos.setY(showPos.y() + ui->openDownload->size().height());
+            downloadDialog->move(showPos);
+            downloadDialog->show();
+        }
     });
 }
 void MainWindow::initMainWebView()

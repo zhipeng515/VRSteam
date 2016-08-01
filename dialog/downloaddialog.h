@@ -16,6 +16,8 @@ public:
     explicit DownloadDialog(QWidget *parent = 0);
     ~DownloadDialog();
 
+    void resizeEvent(QResizeEvent *event);
+
 public slots:
     void appDownloadBegin(const QUrl & url);
     void addDownloadItem(const AppInfo * appInfo);

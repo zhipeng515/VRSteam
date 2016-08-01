@@ -32,9 +32,12 @@ LocalAppManager::LocalAppManager(QObject *parent) : QObject(parent)
             this, SIGNAL(appDownloadBegin(const QUrl&)));
 
     // Test code
-//    downloadApp(0, "http://www.sina.com.cn", "abc");
-//    downloadApp(1, "http://www.baidu.com", "abcdef");
-//    downloadApp(2, "http://www.qqq.com", "abcdefhig");
+    downloadApp(0, "http://www.sina.com.cn", "abc");
+    downloadApp(1, "http://www.baidu.com", "abcdef");
+    downloadApp(2, "http://www.qqq.com", "abcdefhig");
+    downloadApp(3, "http://www.sinaa.com.cn", "abc");
+    downloadApp(4, "http://www.baidua.com", "abcdef");
+    downloadApp(5, "http://www.qqqa.com", "abcdefhig");
 
 //    AppInfo::saveModels(Preferences::getInstance()->getSettingPath()+"apps.json");
 //    AppInfo::removeAllModels();

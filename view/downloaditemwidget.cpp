@@ -33,7 +33,8 @@ DownloadItemWidget::DownloadItemWidget(const int id, QWidget *parent) :
     if(appInfo->isValid()) {
         ui->nameLabel->setText(appInfo->name());
         ui->iconLabel->setUrl(appInfo->iconUrl());
-        updateInfo(tr("Downloading"), QStyle::SP_MediaPause);
+        ui->progressBar->setValue(0);
+        updateInfo(tr("Downloading"), QStyle::SP_MediaPause, true);
     }
 }
 
@@ -61,8 +62,7 @@ void DownloadItemWidget::appDownloadError(const QUrl & url, QNetworkReply::Netwo
 {
     AppInfo * appInfo = AppInfo::getModel(appId);
     if(appInfo->isValid() && QUrl(appInfo->downloadUrl()) == url) {
-        ui->progressBar->setVisible(false);
-        updateInfo(tr("Error"), QStyle::SP_MediaPlay);
+        updateInfo(tr("Error"), QStyle::SP_MediaPlay, false);
     }
 }
 
@@ -71,7 +71,7 @@ void DownloadItemWidget::appDownloadTimeout(const QUrl & url)
     AppInfo * appInfo = AppInfo::getModel(appId);
     if(appInfo->isValid() && QUrl(appInfo->downloadUrl()) == url) {
         ui->progressBar->setVisible(false);
-        updateInfo(tr("Timeout"), QStyle::SP_MediaPlay);
+        updateInfo(tr("Timeout"), QStyle::SP_MediaPlay, false);
     }
 }
 
@@ -79,8 +79,7 @@ void DownloadItemWidget::appDownloadPause(const QUrl & url)
 {
     AppInfo * appInfo = AppInfo::getModel(appId);
     if(appInfo->isValid() && QUrl(appInfo->downloadUrl()) == url) {
-        ui->progressBar->setVisible(false);
-        updateInfo(tr("Pause"), QStyle::SP_MediaPlay);
+        updateInfo(tr("Pause"), QStyle::SP_MediaPlay, true);
     }
 }
 
@@ -89,7 +88,7 @@ void DownloadItemWidget::appDownloadResume(const QUrl & url)
     AppInfo * appInfo = AppInfo::getModel(appId);
     if(appInfo->isValid() && QUrl(appInfo->downloadUrl()) == url) {
         ui->progressBar->setVisible(false);
-        updateInfo(tr("Downloading"), QStyle::SP_MediaPlay);
+        updateInfo(tr("Downloading"), QStyle::SP_MediaPlay, true);
     }
 }
 
@@ -102,13 +101,13 @@ void DownloadItemWidget::on_operatorButton_clicked()
         }
         else {
             DownloadManager::getInstance()->resume(appInfo->downloadUrl());
-            ui->progressBar->setVisible(true);
         }
     }
 }
 
-void DownloadItemWidget::updateInfo(const QString &info, QStyle::StandardPixmap pixmap)
+void DownloadItemWidget::updateInfo(const QString &info, QStyle::StandardPixmap pixmap, bool showProgressBar)
 {
+    ui->progressBar->setVisible(showProgressBar);
     ui->infoLabel->setText(info);
     ui->operatorButton->setIcon(this->style()->standardPixmap(pixmap));
 }

@@ -25,7 +25,7 @@ public slots:
     void appDownloadResume(const QUrl & url);
     void appDownloadTimeout(const QUrl & url);
 
-    void updateInfo(const QString &info, QStyle::StandardPixmap pixmap);
+    void updateInfo(const QString &info, QStyle::StandardPixmap pixmap, bool showProgressBar);
 
 private slots:
     void on_operatorButton_clicked();

@@ -97,6 +97,11 @@
           <height>18</height>
          </size>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string>1.2M/20.M - 暂停</string>
         </property>
