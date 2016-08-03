@@ -95,17 +95,16 @@ void MainWindow::initTitleBar()
     QPixmap downloadPixmap = this->style()->standardPixmap(QStyle::SP_ArrowDown);
     ui->openDownload->setIcon(downloadPixmap);
     connect(ui->openDownload, &QToolButton::clicked, [&]{
-        DownloadDialog * downloadDialog = new DownloadDialog(this);
-        if(!downloadDialog->isHidden()) {
-            downloadDialog->close();
-        }
-        else {
-            QPoint showPos = QWidget::mapToGlobal(ui->openDownload->pos());
-            showPos.setX(showPos.x() - (downloadDialog->size().width() - ui->openDownload->size().width()) / 2);
-            showPos.setY(showPos.y() + ui->openDownload->size().height());
-            downloadDialog->move(showPos);
-            downloadDialog->show();
-        }
+        DownloadDialog downloadDialog(this);
+        QPoint showPos = QWidget::mapToGlobal(ui->openDownload->pos());
+        showPos.setX(showPos.x() - (downloadDialog.size().width() - ui->openDownload->size().width()) / 2);
+        showPos.setY(showPos.y() + ui->openDownload->size().height());
+        downloadDialog.move(showPos);
+        downloadDialog.show();
+
+        QEventLoop loop;
+        connect(&downloadDialog, SIGNAL(finished(int)), &loop, SLOT(quit()));
+        loop.exec();
     });
 }
 void MainWindow::initMainWebView()

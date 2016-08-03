@@ -20,7 +20,7 @@ public:
     virtual void showEvent(QShowEvent *event);
     virtual void resizeEvent(QResizeEvent *event);
     virtual void paintEvent(QPaintEvent *event);
-
+    virtual bool eventFilter(QObject *obj, QEvent *event);
 public slots:
     void appDownloadBegin(const QUrl & url);
     void appDownloadComplete(const QUrl & url);

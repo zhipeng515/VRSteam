@@ -1,4 +1,4 @@
-#include "downloaddialog.h"
+﻿#include "downloaddialog.h"
 #include "ui_downloaddialog.h"
 #include "view/downloaditemwidget.h"
 #include "util/models.h"
@@ -15,12 +15,15 @@ DownloadDialog::DownloadDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    setWindowFlags(Qt::Popup | Qt::FramelessWindowHint); // Windows
+//    installEventFilter(this);
+
+    setWindowFlags(Qt::Popup | Qt::FramelessWindowHint);
     setFixedWidth(320);
     // 平台注意事项：
     // X11（linux）：此特性依赖于能提供支持ARGB视觉效果和复合式视窗管理的X服务的功能开启。
     // Windows：此控件需要设置窗口标志Qt::FramelessWindowHint才能开启透明功能。
     setAttribute(Qt::WA_TranslucentBackground);
+    setAutoFillBackground(false);
 
 //    setStyleSheet ("#DownloadDialog{background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 lightgray, stop: 1 gray)};color: rgb(255,255,255);");
 
@@ -93,6 +96,16 @@ void DownloadDialog::resizeEvent(QResizeEvent *event)
     QDialog::resizeEvent(event);
 }
 
+bool DownloadDialog::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::FocusOut ||
+        event->type() == QEvent::KeyPress ||
+        event->type() == QEvent::MouseButtonPress)
+    {
+        close();
+    }
+    return QDialog::eventFilter(obj, event);
+}
 DownloadDialog::~DownloadDialog()
 {
     delete ui;
