@@ -95,7 +95,7 @@ void MainWindow::initTitleBar()
     QPixmap downloadPixmap = this->style()->standardPixmap(QStyle::SP_ArrowDown);
     ui->openDownload->setIcon(downloadPixmap);
     connect(ui->openDownload, &QToolButton::clicked, [&]{
-        static DownloadDialog * downloadDialog = new DownloadDialog(this);
+        DownloadDialog * downloadDialog = new DownloadDialog(this);
         if(!downloadDialog->isHidden()) {
             downloadDialog->close();
         }

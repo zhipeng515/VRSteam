@@ -31,7 +31,8 @@ signals:
 
 
 public slots:    
-    void downloadApp(const int id, const QString & downloadUrl, const QString & appName);
+    void downloadApp(const int id, const QString & downloadUrl, const QString & appName,
+                     const QString & iconUrl, const QString & version);
     void installApp(const int appId);
     void launchApp(const int appId);
     void uninstallApp(const int appId);

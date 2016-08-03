@@ -118,6 +118,8 @@ void DownloadManagerFTP::pause()
     _nDownloadSizeAtPause = _nDownloadSize;
     _nDownloadSize = 0;
 
+    _state = FTP_DOWNLOAD_PAUSE;
+
     emit downloadPause(_URL);
 }
 
@@ -161,6 +163,8 @@ void DownloadManagerFTP::download()
     _Timer.setSingleShot(true);
     connect(&_Timer, SIGNAL(timeout()), this, SLOT(timeout()));
     _Timer.start();
+
+    _state = FTP_DOWNLOADING;
 }
 
 
@@ -175,6 +179,8 @@ void DownloadManagerFTP::finished()
     delete _pFile;
     _pFile = NULL;
 
+    _state = FTP_DOWNLOAD_COMPLETE;
+
     emit downloadComplete(_URL);
 }
 
@@ -182,6 +188,7 @@ void DownloadManagerFTP::finished()
 void DownloadManagerFTP::error(QNetworkReply::NetworkError code)
 {
     qDebug() << __FUNCTION__ << "(" << code << ")";
+    _state = FTP_DOWNLOAD_ERROR;
     emit downloadError(_URL, code);
 }
 
@@ -189,12 +196,33 @@ void DownloadManagerFTP::error(QNetworkReply::NetworkError code)
 void DownloadManagerFTP::timeout()
 {
     qDebug() << __FUNCTION__;
+    _state = FTP_DOWNLOAD_TIMEOUT;
     emit downloadTimeout(_URL);
 }
 
 bool DownloadManagerFTP::isDownloading()
 {
     return _Timer.isActive();
+}
+
+bool DownloadManagerFTP::isDownloadError()
+{
+    return _state == FTP_DOWNLOAD_ERROR;
+}
+
+bool DownloadManagerFTP::isDownloadTimeout()
+{
+    return _state == FTP_DOWNLOAD_TIMEOUT;
+}
+
+bool DownloadManagerFTP::isDownloadPause()
+{
+    return _state == FTP_DOWNLOAD_PAUSE;
+}
+
+bool DownloadManagerFTP::isDownloadComplete()
+{
+    return _state == FTP_DOWNLOAD_COMPLETE;
 }
 
 void DownloadManagerFTP::stateChanged(int state)

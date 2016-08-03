@@ -16,8 +16,6 @@ DownloadItemWidget::DownloadItemWidget(const int id, QWidget *parent) :
     QPixmap minPixmap = this->style()->standardPixmap(QStyle::SP_MediaPause);
     ui->operatorButton->setIcon(minPixmap);
 
-    connect(LocalAppManager::getInstance(), SIGNAL(appDownloadComplete(const QUrl&)),
-            this, SLOT(appDownloadComplete(const QUrl&)));
     connect(LocalAppManager::getInstance(), SIGNAL(appDownloadProgress(const QUrl& , int)),
             this, SLOT(appDownloadProgress(const QUrl&, int)));
     connect(LocalAppManager::getInstance(), SIGNAL(appDownloadError(const QUrl&, QNetworkReply::NetworkError)),
@@ -34,20 +32,20 @@ DownloadItemWidget::DownloadItemWidget(const int id, QWidget *parent) :
         ui->nameLabel->setText(appInfo->name());
         ui->iconLabel->setUrl(appInfo->iconUrl());
         ui->progressBar->setValue(0);
-        updateInfo(tr("Downloading"), QStyle::SP_MediaPause, true);
+        if(DownloadManager::getInstance()->isDownloading(appInfo->downloadUrl()))
+            updateInfo(tr("Downloading"), QStyle::SP_MediaPause, true);
+        else if(DownloadManager::getInstance()->isDownloadPause(appInfo->downloadUrl()))
+            updateInfo(tr("Pause"), QStyle::SP_MediaPlay, false);
+        else if(DownloadManager::getInstance()->isDownloadError(appInfo->downloadUrl()))
+            updateInfo(tr("Error"), QStyle::SP_MediaPlay, false);
+        else if(DownloadManager::getInstance()->isDownloadTimeout(appInfo->downloadUrl()))
+            updateInfo(tr("Timeout"), QStyle::SP_MediaPlay, false);
     }
 }
 
 DownloadItemWidget::~DownloadItemWidget()
 {
     delete ui;
-}
-
-void DownloadItemWidget::appDownloadComplete(const QUrl & url)
-{
-    AppInfo * appInfo = AppInfo::getModel(appId);
-    if(appInfo->isValid() && QUrl(appInfo->downloadUrl()) == url)
-        deleteLater();
 }
 
 void DownloadItemWidget::appDownloadProgress(const QUrl & url, int nPercentage)
@@ -88,7 +86,7 @@ void DownloadItemWidget::appDownloadResume(const QUrl & url)
     AppInfo * appInfo = AppInfo::getModel(appId);
     if(appInfo->isValid() && QUrl(appInfo->downloadUrl()) == url) {
         ui->progressBar->setVisible(false);
-        updateInfo(tr("Downloading"), QStyle::SP_MediaPlay, true);
+        updateInfo(tr("Downloading"), QStyle::SP_MediaPause, true);
     }
 }
 

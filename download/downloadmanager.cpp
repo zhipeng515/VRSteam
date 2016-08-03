@@ -54,10 +54,10 @@ void DownloadManager::download(const QUrl & url, const QString & localPath)
 
             connect(pHTTP, SIGNAL(addLine(const QUrl&, const QString&)), this, SIGNAL(addLine(const QUrl&, const QString&)));
             connect(pHTTP, SIGNAL(downloadProgress(const QUrl&,int)), this, SIGNAL(downloadProgress(const QUrl&, int)));
-            connect(pHTTP, SIGNAL(downloadBegin(const QUrl&)), this, SIGNAL(downloadBegin(const QUrl&,)));
-            connect(pHTTP, SIGNAL(downloadPause(const QUrl&)), this, SIGNAL(downloadPause(const QUrl&,)));
-            connect(pHTTP, SIGNAL(downloadResume(const QUrl&)), this, SIGNAL(downloadResume(const QUrl&,)));
-            connect(pHTTP, SIGNAL(downloadComplete(const QUrl&)), this, SIGNAL(downloadComplete(const QUrl&,)));
+            connect(pHTTP, SIGNAL(downloadBegin(const QUrl&)), this, SIGNAL(downloadBegin(const QUrl&)));
+            connect(pHTTP, SIGNAL(downloadPause(const QUrl&)), this, SIGNAL(downloadPause(const QUrl&)));
+            connect(pHTTP, SIGNAL(downloadResume(const QUrl&)), this, SIGNAL(downloadResume(const QUrl&)));
+            connect(pHTTP, SIGNAL(downloadComplete(const QUrl&)), this, SIGNAL(downloadComplete(const QUrl&)));
             connect(pHTTP, SIGNAL(downloadError(const QUrl&, QNetworkReply::NetworkError)), this, SIGNAL(downloadError(const QUrl&, QNetworkReply::NetworkError)));
             connect(pHTTP, SIGNAL(downloadTimeout(const QUrl&)), this, SIGNAL(downloadTimeout(const QUrl&)));
 
@@ -76,7 +76,7 @@ void DownloadManager::pause(const QUrl & url)
     if (_URL.scheme().toLower() == "ftp")
     {
         DownloadManagerFTP * pFTP = ftpDownloads[url];
-        if (pFTP == NULL) {
+        if (pFTP != NULL) {
             pFTP->pause();
         }
     }
@@ -84,7 +84,7 @@ void DownloadManager::pause(const QUrl & url)
 #endif
     {
         DownloadManagerHTTP * pHTTP = httpDownloads[url];
-        if (pHTTP == NULL) {
+        if (pHTTP != NULL) {
             pHTTP->pause();
         }
     }
@@ -99,7 +99,7 @@ void DownloadManager::resume(const QUrl & url)
     if (_URL.scheme().toLower() == "ftp")
     {
         DownloadManagerFTP * pFTP = ftpDownloads[url];
-        if (pFTP == NULL) {
+        if (pFTP != NULL) {
             pFTP->resume();
         }
     }
@@ -107,7 +107,7 @@ void DownloadManager::resume(const QUrl & url)
 #endif
     {
         DownloadManagerHTTP * pHTTP = httpDownloads[url];
-        if (pHTTP == NULL) {
+        if (pHTTP != NULL) {
             pHTTP->resume();
         }
     }
@@ -119,7 +119,7 @@ bool DownloadManager::isDownloading(const QUrl & url)
     if (_URL.scheme().toLower() == "ftp")
     {
         DownloadManagerFTP * pFTP = ftpDownloads[url];
-        if (pFTP == NULL) {
+        if (pFTP != NULL) {
             return pFTP->isDownloading();
         }
     }
@@ -127,8 +127,92 @@ bool DownloadManager::isDownloading(const QUrl & url)
 #endif
     {
         DownloadManagerHTTP * pHTTP = httpDownloads[url];
-        if (pHTTP == NULL) {
+        if (pHTTP != NULL) {
             return pHTTP->isDownloading();
+        }
+    }
+    return false;
+}
+
+bool DownloadManager::isDownloadError(const QUrl & url)
+{
+#if QT_VERSION < 0x050000
+    if (_URL.scheme().toLower() == "ftp")
+    {
+        DownloadManagerFTP * pFTP = ftpDownloads[url];
+        if (pFTP != NULL) {
+            return pFTP->isDownloadError();
+        }
+    }
+    else
+#endif
+    {
+        DownloadManagerHTTP * pHTTP = httpDownloads[url];
+        if (pHTTP != NULL) {
+            return pHTTP->isDownloadError();
+        }
+    }
+    return false;
+}
+
+bool DownloadManager::isDownloadTimeout(const QUrl & url)
+{
+#if QT_VERSION < 0x050000
+    if (_URL.scheme().toLower() == "ftp")
+    {
+        DownloadManagerFTP * pFTP = ftpDownloads[url];
+        if (pFTP != NULL) {
+            return pFTP->isDownloadTimeout();
+        }
+    }
+    else
+#endif
+    {
+        DownloadManagerHTTP * pHTTP = httpDownloads[url];
+        if (pHTTP != NULL) {
+            return pHTTP->isDownloadTimeout();
+        }
+    }
+    return false;
+}
+
+bool DownloadManager::isDownloadPause(const QUrl & url)
+{
+#if QT_VERSION < 0x050000
+    if (_URL.scheme().toLower() == "ftp")
+    {
+        DownloadManagerFTP * pFTP = ftpDownloads[url];
+        if (pFTP != NULL) {
+            return pFTP->isDownloadPause();
+        }
+    }
+    else
+#endif
+    {
+        DownloadManagerHTTP * pHTTP = httpDownloads[url];
+        if (pHTTP != NULL) {
+            return pHTTP->isDownloadPause();
+        }
+    }
+    return false;
+}
+
+bool DownloadManager::isDownloadComplete(const QUrl & url)
+{
+#if QT_VERSION < 0x050000
+    if (_URL.scheme().toLower() == "ftp")
+    {
+        DownloadManagerFTP * pFTP = ftpDownloads[url];
+        if (pFTP != NULL) {
+            return pFTP->isDownloadComplete();
+        }
+    }
+    else
+#endif
+    {
+        DownloadManagerHTTP * pHTTP = httpDownloads[url];
+        if (pHTTP != NULL) {
+            return pHTTP->isDownloadComplete();
         }
     }
     return false;

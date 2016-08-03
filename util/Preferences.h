@@ -23,6 +23,7 @@
 #include <QMap>
 #include <QSettings>
 
+class QNetworkAccessManager;
 class Preferences {
 
 public:

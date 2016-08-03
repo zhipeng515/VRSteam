@@ -44,6 +44,10 @@ public slots:
     void pause(const QUrl & url);
     void resume(const QUrl & url);
     bool isDownloading(const QUrl & url);
+    bool isDownloadError(const QUrl & url);
+    bool isDownloadTimeout(const QUrl & url);
+    bool isDownloadPause(const QUrl & url);
+    bool isDownloadComplete(const QUrl & url);
 
 private:
     QMap<QUrl, DownloadManagerHTTP*> httpDownloads;

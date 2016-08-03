@@ -33,6 +33,10 @@ public slots:
     void pause();
     void resume();
     bool isDownloading();
+    bool isDownloadError();
+    bool isDownloadTimeout();
+    bool isDownloadPause();
+    bool isDownloadComplete();
 
 private slots:
     void download();
@@ -41,6 +45,8 @@ private slots:
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void error(QNetworkReply::NetworkError code);
     void timeout();
+    void requestHead();
+    void stopRequest();
 
 private:
     QUrl _URL;
@@ -54,6 +60,16 @@ private:
     int _nDownloadSize;
     int _nDownloadSizeAtPause;
     QTimer _Timer;
+    enum HTTP_DOWNLOAD_STATE{
+        HTTP_DOWNLOAD_UNKNOW = 0,
+        HTTP_DOWNLOAD_REQUEST_HEAD,
+        HTTP_DOWNLOADING,
+        HTTP_DOWNLOAD_PAUSE,
+        HTTP_DOWNLOAD_ERROR,
+        HTTP_DOWNLOAD_TIMEOUT,
+        HTTP_DOWNLOAD_COMPLETE
+    };
+    HTTP_DOWNLOAD_STATE _state;
 };
 
 #endif // DOWNLOADMANAGERHTTP_H

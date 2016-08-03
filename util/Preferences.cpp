@@ -18,6 +18,8 @@
 #include "Preferences.h"
 #include <QStandardPaths>
 #include <QDir>
+#include <QNetworkAccessManager>
+#include <QNetworkDiskCache>
 
 Preferences * Preferences::getInstance()
 {
@@ -31,11 +33,11 @@ Preferences::Preferences()
     setBlacklist("http://passport.weibo.com/visitor/visitor?from=iframe");
 
     if(getDownloadPath() == "") {
-        QString downloadPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "/VRSteam/Downloads/";
+        QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/VRSteam/Downloads/";
         setDownloadPath(downloadPath);
     }
     if(getSettingPath() == "") {
-        QString settingPath = QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation)[0] + "/VRSteam/Settings/";
+        QString settingPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/VRSteam/Settings/";
         setSettingPath(settingPath);
     }
 }
@@ -92,9 +94,9 @@ QString Preferences::getDownloadPath()
 
 void Preferences::setSettingPath(const QString& path)
 {
-    QDir downloadDir;
-    if(!downloadDir.exists(path))
-        downloadDir.mkpath(path);
+    QDir settingDir;
+    if(!settingDir.exists(path))
+        settingDir.mkpath(path);
 
     settings.beginGroup("path");
     settings.setValue("setting", path);
@@ -108,7 +110,6 @@ QString Preferences::getSettingPath()
     settings.endGroup();
     return path;
 }
-
 
 void Preferences::setPermission(QWebEnginePage::Feature feature, bool granted)
 {

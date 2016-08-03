@@ -37,6 +37,10 @@ public slots:
     void pause();
     void resume();
     bool isDownloading();
+    bool isDownloadError();
+    bool isDownloadTimeout();
+    bool isDownloadPause();
+    bool isDownloadComplete();
 
 private slots:
     void download();
@@ -62,6 +66,16 @@ private:
     int _nDownloadSize;
     int _nDownloadSizeAtPause;
     QTimer _Timer;
+    enum FTP_DOWNLOAD_STATE{
+        FTP_DOWNLOAD_UNKNOW = 0,
+        FTP_DOWNLOADING,
+        FTP_DOWNLOAD_PAUSE,
+        FTP_DOWNLOAD_ERROR,
+        FTP_DOWNLOAD_TIMEOUT,
+        FTP_DOWNLOAD_COMPLETE
+    };
+    FTP_DOWNLOAD_STATE _state;
+
 };
 
 #endif // QT_VERSION < 0x050000

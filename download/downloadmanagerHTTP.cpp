@@ -14,6 +14,7 @@ DownloadManagerHTTP::DownloadManagerHTTP(QObject *parent) :
     , _bAcceptRanges(false)
     , _nDownloadSize(0)
     , _nDownloadSizeAtPause(0)
+    , _state(HTTP_DOWNLOAD_UNKNOW)
 {
 }
 
@@ -36,11 +37,18 @@ void DownloadManagerHTTP::download(const QUrl & url, const QString & localPath)
         QFileInfo fileInfo(url.toString());
         _qsFileName = localPath + fileInfo.fileName();
     }
-    _nDownloadSize = 0;
-    _nDownloadSizeAtPause = 0;
 
     _pManager = new QNetworkAccessManager(this);
-    _CurrentRequest = QNetworkRequest(url);
+    requestHead();
+
+    emit downloadBegin(_URL);
+}
+
+void DownloadManagerHTTP::requestHead()
+{
+    _nDownloadSize = 0;
+    _nDownloadSizeAtPause = 0;
+    _CurrentRequest = QNetworkRequest(_URL);
 
     _pCurrentReply = _pManager->head(_CurrentRequest);
 
@@ -52,13 +60,11 @@ void DownloadManagerHTTP::download(const QUrl & url, const QString & localPath)
     connect(_pCurrentReply, SIGNAL(finished()), this, SLOT(finishedHead()));
     connect(_pCurrentReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(error(QNetworkReply::NetworkError)));
 
-    emit downloadBegin(_URL);
+    _state = HTTP_DOWNLOAD_REQUEST_HEAD;
 }
 
-
-void DownloadManagerHTTP::pause()
+void DownloadManagerHTTP::stopRequest()
 {
-    qDebug() << "pause() = " << _nDownloadSize;
     if (_pCurrentReply == NULL)
     {
         return;
@@ -66,15 +72,25 @@ void DownloadManagerHTTP::pause()
     _Timer.stop();
     disconnect(&_Timer, SIGNAL(timeout()), this, SLOT(timeout()));
     disconnect(_pCurrentReply, SIGNAL(finished()), this, SLOT(finished()));
+    disconnect(_pCurrentReply, SIGNAL(finished()), this, SLOT(finishedHead()));
     disconnect(_pCurrentReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
     disconnect(_pCurrentReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(error(QNetworkReply::NetworkError)));
 
     _pCurrentReply->abort();
-//    _pFile->write( _pCurrentReply->readAll());
-    _pFile->flush();
+    if(_pFile)
+        _pFile->flush();
     _pCurrentReply = 0;
     _nDownloadSizeAtPause = _nDownloadSize;
     _nDownloadSize = 0;
+
+    _state = HTTP_DOWNLOAD_PAUSE;
+}
+
+void DownloadManagerHTTP::pause()
+{
+    qDebug() << "pause() = " << _nDownloadSize;
+
+    stopRequest();
 
     emit downloadPause(_URL);
 }
@@ -84,7 +100,12 @@ void DownloadManagerHTTP::resume()
 {
     qDebug() << "resume() = " << _nDownloadSizeAtPause;
 
-    download();
+    if(_pFile == 0 || _nDownloadSize == 0) {
+        requestHead();
+    }
+    else {
+        download();
+    }
     emit downloadResume(_URL);
 }
 
@@ -113,6 +134,8 @@ void DownloadManagerHTTP::download()
     connect(_pCurrentReply, SIGNAL(finished()), this, SLOT(finished()));
     connect(_pCurrentReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
     connect(_pCurrentReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(error(QNetworkReply::NetworkError)));
+
+    _state = HTTP_DOWNLOADING;
 }
 
 
@@ -162,6 +185,8 @@ void DownloadManagerHTTP::finished()
     _pFile->rename(_qsFileName + ".part", _qsFileName);
     _pFile = NULL;
     _pCurrentReply = 0;
+
+    _state = HTTP_DOWNLOAD_COMPLETE;
     emit downloadComplete(_URL);
 }
 
@@ -185,9 +210,32 @@ bool DownloadManagerHTTP::isDownloading()
     return _Timer.isActive();
 }
 
+bool DownloadManagerHTTP::isDownloadError()
+{
+    return _state == HTTP_DOWNLOAD_ERROR;
+}
+
+bool DownloadManagerHTTP::isDownloadTimeout()
+{
+    return _state == HTTP_DOWNLOAD_TIMEOUT;
+}
+
+bool DownloadManagerHTTP::isDownloadPause()
+{
+    return _state == HTTP_DOWNLOAD_PAUSE;
+}
+
+bool DownloadManagerHTTP::isDownloadComplete()
+{
+    return _state == HTTP_DOWNLOAD_COMPLETE;
+}
+
+
 void DownloadManagerHTTP::error(QNetworkReply::NetworkError code)
 {
     qDebug() << __FUNCTION__ << "(" << code << ")";
+    stopRequest();
+    _state = HTTP_DOWNLOAD_ERROR;
     emit downloadError(_URL, code);
 }
 
@@ -195,5 +243,7 @@ void DownloadManagerHTTP::error(QNetworkReply::NetworkError code)
 void DownloadManagerHTTP::timeout()
 {
     qDebug() << __FUNCTION__;
+    stopRequest();
+    _state = HTTP_DOWNLOAD_TIMEOUT;
     emit downloadTimeout(_URL);
 }
