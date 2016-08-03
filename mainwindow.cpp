@@ -17,7 +17,6 @@
 
 #include <QRegExp>
 #include <QSettings>
-#include <QMessageBox>
 #include <QPropertyAnimation>
 #include <QDesktopWidget>
 

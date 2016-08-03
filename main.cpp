@@ -16,6 +16,7 @@
  */
 
 #include <QApplication>
+#include <QTranslator>
 
 #include "mainwindow.h"
 
@@ -34,7 +35,13 @@ int main(int argc, char *argv[])
     QApplication::setOrganizationDomain("https://vr.sina.com.cn");
     QApplication::setApplicationVersion(APP_VERSION);
 
+
     QApplication a(argc, argv);
+    QString translatorFileName = ":/zh_CN.qm";
+    QTranslator *translator = new QTranslator(&a);
+    if (translator->load(translatorFileName))
+       a.installTranslator(translator);
+
     MainWindow w;
     w.show();
 

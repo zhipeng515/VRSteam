@@ -20,17 +20,17 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
-       <string>通知</string>
+       <string>Notifications</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
         <widget class="QRadioButton" name="radioButton">
          <property name="text">
-          <string>原生通知</string>
+          <string>Native Notifications</string>
          </property>
          <attribute name="buttonGroup">
           <string notr="true">notificationButtonGroup</string>
@@ -40,7 +40,7 @@
        <item row="1" column="0">
         <widget class="QRadioButton" name="radioButton_2">
          <property name="text">
-          <string>托盘通知</string>
+          <string>Tray Notifications</string>
          </property>
          <attribute name="buttonGroup">
           <string notr="true">notificationButtonGroup</string>
@@ -50,7 +50,7 @@
        <item row="2" column="0">
         <widget class="QRadioButton" name="radioButton_3">
          <property name="text">
-          <string>关闭通知</string>
+          <string>Disable Notifications</string>
          </property>
          <attribute name="buttonGroup">
           <string notr="true">notificationButtonGroup</string>
@@ -61,27 +61,27 @@
      </widget>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
-       <string>权限</string>
+       <string>Permissions</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
         <widget class="QCheckBox" name="cameraCheckBox">
          <property name="text">
-          <string>摄像头</string>
+          <string>Camera</string>
          </property>
         </widget>
        </item>
        <item row="1" column="0">
         <widget class="QCheckBox" name="micCheckBox">
          <property name="text">
-          <string>麦克风</string>
+          <string>Microphone</string>
          </property>
         </widget>
        </item>
        <item row="2" column="0">
         <widget class="QCheckBox" name="locationCheckBox">
          <property name="text">
-          <string>位置</string>
+          <string>Location</string>
          </property>
         </widget>
        </item>

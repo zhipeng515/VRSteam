@@ -120,3 +120,5 @@ include ($$PWD/3rd-party/http/http.pri)
 DISTFILES += \
     README.MD \
     html/activitys.json
+
+TRANSLATIONS = zh_CN.ts
