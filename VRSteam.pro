@@ -121,4 +121,4 @@ DISTFILES += \
     README.MD \
     html/activitys.json
 
-TRANSLATIONS = zh_CN.ts
+TRANSLATIONS = language/zh_CN.ts

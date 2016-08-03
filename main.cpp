@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 
 
     QApplication a(argc, argv);
-    QString translatorFileName = ":/zh_CN.qm";
+    QString translatorFileName = ":/language/" + QLocale::system().name() + ".qm";
     QTranslator *translator = new QTranslator(&a);
     if (translator->load(translatorFileName))
        a.installTranslator(translator);

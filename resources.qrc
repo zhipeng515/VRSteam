@@ -6,6 +6,6 @@
         <file>html/test.html</file>
         <file>html/activitys.json</file>
         <file>config/api.json</file>
-        <file>zh_CN.qm</file>
+        <file>language/zh_CN.qm</file>
     </qresource>
 </RCC>
