@@ -52,7 +52,7 @@ WebView::WebView(QWidget *parent)
     connect(page, &QWebEnginePage::featurePermissionRequested, this, &WebView::onFeaturePermissionRequest);
 
     // 补丁，因为重新加载页面导致webchannel丢失，等待QT更新修复BUG
-    connect(this, &WebView::urlChanged, [=]{
+    connect(this, &WebView::loadStarted, [=]{
         insertJavaScript(profile->scripts());
     });
 }
