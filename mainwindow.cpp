@@ -164,20 +164,22 @@ void MainWindow::checkSelfUpdate()
 void MainWindow::checkActivitys()
 {
     QMap<QString, QString> params;
-    HttpService::getInstance()->request("activity", params,
-        [&](const QByteArray &bytes){
+//    HttpService::getInstance()->request("activity", params,
+//        [&](const QByteArray &bytes){
             ActivityInfo activityInfo;
-            activityInfo.importFromJson(bytes);
+            QFile file(":/html/activitys.json");
+            file.open(QIODevice::ReadOnly);
+            activityInfo.importFromJson(file.readAll());
             if(activityInfo.urls().count() > 0){
                 auto activityDialog = new ActivityDialog(this);
                 activityDialog->setActivityUrls(activityInfo.urls());
-                activityDialog->show();
+                activityDialog->open();
             }
-        },
-        [&](const QString &message){
-            qDebug() << message;
-        }
-    );
+//        },
+//        [&](const QString &message){
+//            qDebug() << message;
+//        }
+//    );
 }
 
 void MainWindow::updateCheckingFinished(QString url)

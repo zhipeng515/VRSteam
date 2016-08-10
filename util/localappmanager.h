@@ -3,8 +3,10 @@
 
 #include <QObject>
 #include <QNetworkReply>
+
 class AppInfo;
 class DownloadManager;
+class DownloadApps;
 
 class LocalAppManager : public QObject
 {
@@ -14,7 +16,7 @@ public:
     static LocalAppManager * getInstance();
 
 private:
-    QList<AppInfo*> downloadApps;
+    DownloadApps * downloadApps;
 
 signals:
     void appInstallBegin(const AppInfo & app);
@@ -32,20 +34,21 @@ signals:
 
 public slots:    
     void downloadApp(const int id, const QString & downloadUrl, const QString & appName,
-                     const QString & iconUrl, const QString & version);
+                     const QString & iconUrl, const QString & version, const QString & launcher);
     void installApp(const int appId);
     void launchApp(const int appId);
     void uninstallApp(const int appId);
 
     bool isAppInstalled(const int appId);
     bool isAppDownloading(const int appId);
+    bool isAppDownloaded(const int appId);
     bool isAppRunning(const int appId);
     bool isAppNeedUpdated(const int appId, const QString & latestVersion);
 
     void downloadComplete(const QUrl & url);
 
     AppInfo * getDownloadApp(const QUrl & url);
-    QList<AppInfo*>  getDownloadApps(){
+    DownloadApps * getDownloadApps(){
         return downloadApps;
     }
 };

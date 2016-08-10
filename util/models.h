@@ -68,5 +68,14 @@ MetaPropertyPublicSet_Ptr_List(ApiInfo, apis)
 
 DECLARE_MODEL_END(ActivityInfo)
 
+DECLARE_MODEL_BEGIN(DownloadApps, JObject)
+
+Q_OBJECT
+
+MetaPropertyPublicSet(int, id)
+MetaPropertyPublicSet(QString, name)
+MetaPropertyPublicSet_Ptr_List(AppInfo, apps)
+
+DECLARE_MODEL_END(DownloadApps)
 
 #endif // MODELS_H

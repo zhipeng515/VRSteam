@@ -3,19 +3,21 @@
 #include "view/webpage.h"
 #include "util/urlservice.h"
 #include <QDesktopWidget>
+#include <QGraphicsDropShadowEffect>
 
 ActivityDialog::ActivityDialog(QWidget *parent) :
-    QDialog(parent),
+    BlurDialog(parent),
     ui(new Ui::ActivityDialog),
     currentPage(0)
 {
     ui->setupUi(this);
+    ui->frame->setAttribute(Qt::WA_TransparentForMouseEvents,true);
 
     setWindowTitle(tr("Activity"));
     setFixedSize(400, 600);
 
     setAttribute(Qt::WA_DeleteOnClose);
-    setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+//    setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
 
     connect(static_cast<WebPage*>(ui->webView->page()), &WebPage::linkClicked, [&](const QUrl&url){
         URLService::getInstance()->handleURL(url, ui->webView);

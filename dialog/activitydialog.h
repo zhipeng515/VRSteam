@@ -1,14 +1,14 @@
 #ifndef ACTIVITYDIALOG_H
 #define ACTIVITYDIALOG_H
 
-#include <QDialog>
+#include "dialog/blurdialog.h"
 #include <QStringList>
 
 namespace Ui {
 class ActivityDialog;
 }
 
-class ActivityDialog : public QDialog
+class ActivityDialog : public BlurDialog
 {
     Q_OBJECT
 

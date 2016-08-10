@@ -71,6 +71,7 @@ void MainWindow::initMenus()
     aboutMenu->addAction(preferencesAction);
 }
 
+#include "dialog/blurdialog.h"
 void MainWindow::initTitleBar()
 {
     QPixmap mainPixmap = this->style()->standardPixmap(QStyle::SP_TitleBarMenuButton);
@@ -96,6 +97,8 @@ void MainWindow::initTitleBar()
     ui->openDownload->setIcon(downloadPixmap);
     connect(ui->openDownload, &QToolButton::clicked, [&]{
         DownloadDialog downloadDialog(this);
+//        BlurDialog downloadDialog(this);
+//        downloadDialog.setGeometry(0, 0, 400, 300);
         QPoint showPos = QWidget::mapToGlobal(ui->openDownload->pos());
         showPos.setX(showPos.x() - (downloadDialog.size().width() - ui->openDownload->size().width()) / 2);
         showPos.setY(showPos.y() + ui->openDownload->size().height());
@@ -112,6 +115,7 @@ void MainWindow::initMainWebView()
     webViewService = new WebViewService(ui->webView, this);
 
     connect(webViewService, &WebViewService::titleChanged, this, &MainWindow::webViewTitleChanged);
+    connect(webViewService, &WebViewService::urlChanged, this, &MainWindow::webViewUrlChanged);
     connect(webViewService, &WebViewService::loadStarted, this, &MainWindow::webViewLoadStarted);
     connect(webViewService, &WebViewService::loadProgress, this, &MainWindow::webViewLoadProgress);
     connect(webViewService, &WebViewService::loadFinished, this, &MainWindow::webViewLoadFinished);

@@ -6,11 +6,14 @@
 #include <QResizeEvent>
 #include <QScrollBar>
 #include <QPainter>
+#include <QTimer>
+#include <QBitmap>
 
 const QSize ARROW_SIZE = QSize(20, 10);
 
+
 DownloadDialog::DownloadDialog(QWidget *parent) :
-    QDialog(parent),
+    BlurDialog(parent),
     ui(new Ui::DownloadDialog)
 {
     ui->setupUi(this);
@@ -54,46 +57,50 @@ DownloadDialog::DownloadDialog(QWidget *parent) :
 
 void DownloadDialog::showEvent(QShowEvent *event)
 {
-    QList<AppInfo*> downloadApps = LocalAppManager::getInstance()->getDownloadApps();
-    for(auto appInfo = downloadApps.begin(); appInfo != downloadApps.end(); appInfo++) {
-        addDownloadItem( *appInfo);
+    DownloadApps * downloadApps = LocalAppManager::getInstance()->getDownloadApps();
+    for(int i = 0; i< downloadApps->countAppInfo(); i++) {
+        AppInfo * appInfo = downloadApps->itemAppInfoAt(i);
+        addDownloadItem( appInfo);
     }
-    QDialog::showEvent(event);
+    BlurDialog::showEvent(event);
 }
 
 void DownloadDialog::hideEvent(QHideEvent *event)
 {
     ui->listWidget->clear();
-    QDialog::hideEvent(event);
+    BlurDialog::hideEvent(event);
 }
 
 void DownloadDialog::paintEvent(QPaintEvent *event)
 {
     QRect rect = this->rect();
 
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing, true);
+    QPixmap maskPixmap(rect.width(), rect.height())    ;
+    maskPixmap.fill(Qt::transparent);
+    QPainter maskPainter(&maskPixmap);
+
     QLinearGradient linearGradient(rect.width()/2,0,rect.width()/2,rect.height());
     linearGradient.setColorAt(0, Qt::lightGray);
     linearGradient.setColorAt(1, Qt::darkGray);
-    painter.setBrush(QBrush(linearGradient));
-    painter.setPen(Qt::NoPen);
+    maskPainter.setBrush(QBrush(linearGradient));
+    maskPainter.setPen(Qt::NoPen);
 
     QPainterPath path(QPoint((rect.width()-ARROW_SIZE.width())/2, ARROW_SIZE.height()));
     path.lineTo(rect.width()/2, 0);
     path.lineTo((rect.width()+ARROW_SIZE.width())/2, ARROW_SIZE.height());
-    painter.drawPath(path);
+    maskPainter.drawPath(path);
 
     rect.setY(ARROW_SIZE.height());
-    painter.drawRoundedRect(rect, 5, 5);
+    maskPainter.drawRoundedRect(rect, 5, 5);
 
+    setMask(maskPixmap.mask());
 
-    QDialog::paintEvent(event);
+    BlurDialog::paintEvent(event);
 }
 
 void DownloadDialog::resizeEvent(QResizeEvent *event)
 {
-    QDialog::resizeEvent(event);
+    BlurDialog::resizeEvent(event);
 }
 
 bool DownloadDialog::eventFilter(QObject *obj, QEvent *event)
@@ -104,7 +111,7 @@ bool DownloadDialog::eventFilter(QObject *obj, QEvent *event)
     {
         close();
     }
-    return QDialog::eventFilter(obj, event);
+    return BlurDialog::eventFilter(obj, event);
 }
 DownloadDialog::~DownloadDialog()
 {
@@ -148,7 +155,10 @@ void DownloadDialog::appDownloadComplete(const QUrl & url)
             if(appId == appInfo->id()) {
                 ui->listWidget->removeItemWidget(item);
                 delete item;
-                resizeDialog();
+                QTimer *timer = new QTimer(this);
+                timer->start(10);
+                connect(timer,SIGNAL(timeout()),this,SLOT(resizeDialog()));
+                connect(timer,SIGNAL(timeout()),timer,SLOT(deleteLater()));
                 break;
             }
         }

@@ -9,6 +9,7 @@
 #include "Preferences.h"
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QFileInfo>
 
 LocalAppManager * LocalAppManager::getInstance()
 {
@@ -30,22 +31,33 @@ LocalAppManager::LocalAppManager(QObject *parent) : QObject(parent)
             this, SIGNAL(appDownloadResume(const QUrl&)));
     connect(DownloadManager::getInstance(), SIGNAL(downloadBegin(const QUrl&)),
             this, SIGNAL(appDownloadBegin(const QUrl&)));
+    connect(DownloadManager::getInstance(), SIGNAL(downloadProgress(const QUrl &, const int)),
+            this, SIGNAL(appDownloadProgress(const QUrl &, const int)));
+
+    AppInfo::loadModels(Preferences::getInstance()->getSettingPath()+"apps.json");
+
+    DownloadApps::loadModels(Preferences::getInstance()->getSettingPath()+"downloadapps.json");
+    downloadApps = DownloadApps::getModel(1);
+    if(downloadApps == nullptr)
+    {
+        downloadApps = new DownloadApps;
+        downloadApps->id(1);
+        downloadApps->name("downloadApps");
+        DownloadApps::addModel(1, downloadApps);
+        DownloadApps::saveModels(Preferences::getInstance()->getSettingPath()+"downloadapps.json");
+    }
 
     // Test code
-    downloadApp(0, "http://www.sina.com.cn", "abc", "http://e.hiphotos.baidu.com/zhidao/pic/item/cefc1e178a82b9014e150b23718da9773912ef62.jpg", "1.0");
-    downloadApp(1, "http://www.baidu.com", "abcdef", "http://e.hiphotos.baidu.com/zhidao/pic/item/cefc1e178a82b9014e150b23718da9773912ef62.jpg", "1.0");
-    downloadApp(2, "http://www.qqq.com", "abcdefhig", "http://e.hiphotos.baidu.com/zhidao/pic/item/cefc1e178a82b9014e150b23718da9773912ef62.jpg", "1.0");
-    downloadApp(3, "http://www.sinaa.com.cn", "abc", "http://e.hiphotos.baidu.com/zhidao/pic/item/cefc1e178a82b9014e150b23718da9773912ef62.jpg", "1.0");
-    downloadApp(4, "http://www.baidua.com", "abcdef", "http://e.hiphotos.baidu.com/zhidao/pic/item/cefc1e178a82b9014e150b23718da9773912ef62.jpg", "1.0");
-    downloadApp(5, "http://www.qqqa.com", "abcdefhig", "http://e.hiphotos.baidu.com/zhidao/pic/item/cefc1e178a82b9014e150b23718da9773912ef62.jpg", "1.0");
-
-//    AppInfo::saveModels(Preferences::getInstance()->getSettingPath()+"apps.json");
-//    AppInfo::removeAllModels();
-//    AppInfo::loadModels(Preferences::getInstance()->getSettingPath()+"apps.json");
+//    downloadApp(0, "http://www.sina.com.cn", "abc", "http://e.hiphotos.baidu.com/zhidao/pic/item/cefc1e178a82b9014e150b23718da9773912ef62.jpg", "1.0", "");
+//    downloadApp(1, "http://www.baidu.com", "abcdef", "http://e.hiphotos.baidu.com/zhidao/pic/item/cefc1e178a82b9014e150b23718da9773912ef62.jpg", "1.0", "");
+//    downloadApp(2, "http://www.qqq.com", "abcdefhig", "http://e.hiphotos.baidu.com/zhidao/pic/item/cefc1e178a82b9014e150b23718da9773912ef62.jpg", "1.0", "");
+//    downloadApp(3, "http://www.sinaa.com.cn", "abc", "http://e.hiphotos.baidu.com/zhidao/pic/item/cefc1e178a82b9014e150b23718da9773912ef62.jpg", "1.0", "");
+//    downloadApp(4, "http://www.baidua.com", "abcdef", "http://e.hiphotos.baidu.com/zhidao/pic/item/cefc1e178a82b9014e150b23718da9773912ef62.jpg", "1.0", "");
+//    downloadApp(5, "http://www.qqqa.com", "abcdefhig", "http://e.hiphotos.baidu.com/zhidao/pic/item/cefc1e178a82b9014e150b23718da9773912ef62.jpg", "1.0", "");
 }
 
 void LocalAppManager::downloadApp(const int id, const QString & downloadUrl, const QString & appName,
-                                  const QString & iconUrl, const QString & version)
+                                  const QString & iconUrl, const QString & version, const QString & launcher)
 {
     AppInfo * appInfo = new AppInfo;
     appInfo->id(id);
@@ -53,12 +65,19 @@ void LocalAppManager::downloadApp(const int id, const QString & downloadUrl, con
     appInfo->name(appName);
     appInfo->iconUrl(iconUrl);
     appInfo->version(version);
+    appInfo->launcher(launcher);
+
+    QString downloadPath = Preferences::getInstance()->getDownloadPath();
+    QFileInfo localFile(downloadUrl);
+    appInfo->localInstallFile(downloadPath + localFile.fileName());
 
     AppInfo::addModel(appInfo->id(), appInfo);
+    downloadApps->appendAppInfo(appInfo);
 
-    DownloadManager::getInstance()->download(downloadUrl, Preferences::getInstance()->getDownloadPath());
+    AppInfo::saveModels(Preferences::getInstance()->getSettingPath()+"apps.json");
+    DownloadApps::saveModels(Preferences::getInstance()->getSettingPath()+"downloadapps.json");
 
-    downloadApps.append(appInfo);
+    DownloadManager::getInstance()->download(downloadUrl, downloadPath);
 }
 
 void LocalAppManager::installApp(const int appId)
@@ -105,11 +124,21 @@ bool LocalAppManager::isAppInstalled(const int appId)
     return false;
 }
 
+bool LocalAppManager::isAppDownloaded(const int appId)
+{
+    AppInfo * appInfo = AppInfo::getModel(appId);
+    if(appInfo->isValid()) {
+        QFileInfo fileInfo(appInfo->localInstallFile());
+        return fileInfo.isExecutable();
+    }
+    return false;
+}
+
 bool LocalAppManager::isAppDownloading(const int appId)
 {
     AppInfo * appInfo = AppInfo::getModel(appId);
     if(appInfo->isValid()) {
-        return downloadApps.contains(appInfo);
+        return downloadApps->itemAppInfoExist(appInfo);
     }
     return false;
 }
@@ -137,15 +166,17 @@ void LocalAppManager::downloadComplete(const QUrl & url)
     AppInfo * appInfo = getDownloadApp(url);
     if(appInfo) {
         emit appDownloadComplete(url);
-        downloadApps.removeOne(appInfo);
+        downloadApps->removeAppInfo(appInfo);
+        DownloadApps::saveModels(Preferences::getInstance()->getSettingPath()+"downloadapps.json");
     }
 }
 
 AppInfo * LocalAppManager::getDownloadApp(const QUrl & url)
 {
-    for(auto appInfo = downloadApps.begin(); appInfo != downloadApps.end(); appInfo++) {
-        if(QUrl((*appInfo)->downloadUrl()) == url) {
-            return *appInfo;
+    for(int i = 0; i< downloadApps->countAppInfo(); i++) {
+        AppInfo * appInfo = downloadApps->itemAppInfoAt(i);
+        if(QUrl(appInfo->downloadUrl()) == url) {
+            return appInfo;
         }
     }
     return nullptr;

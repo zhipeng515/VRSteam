@@ -25,6 +25,11 @@ void MainWindow::webViewTitleChanged(const QString &title)
     ui->title->setText(title);
 }
 
+void MainWindow::webViewUrlChanged(const QUrl & url)
+{
+    qDebug() << __FUNCTION__  + url.toString();
+}
+
 void MainWindow::linkClicked(const QUrl & url)
 {
     qDebug() << __FUNCTION__  + url.toString();

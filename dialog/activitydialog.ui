@@ -17,17 +17,42 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>9</y>
-     <width>381</width>
-     <height>531</height>
+     <y>10</y>
+     <width>380</width>
+     <height>550</height>
     </rect>
    </property>
+   <widget class="QFrame" name="frame">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>380</width>
+      <height>550</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
   </widget>
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
      <x>19</x>
-     <y>550</y>
+     <y>560</y>
      <width>361</width>
      <height>41</height>
     </rect>

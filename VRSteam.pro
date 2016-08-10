@@ -52,7 +52,9 @@ SOURCES += main.cpp\
     util/httpservice.cpp \
     dialog/downloaddialog.cpp \
     view/downloaditemwidget.cpp \
-    view/networkiconlabel.cpp
+    view/networkiconlabel.cpp \
+    dialog/blurdialog.cpp \
+    util/qgraphicsgloweffect.cpp
 
 HEADERS  += mainwindow.h \
     notification/notificationservice.h \
@@ -76,7 +78,9 @@ HEADERS  += mainwindow.h \
     util/httpservice.h \
     dialog/downloaddialog.h \
     view/downloaditemwidget.h \
-    view/networkiconlabel.h
+    view/networkiconlabel.h \
+    dialog/blurdialog.h \
+    util/qgraphicsgloweffect.h
 
 FORMS    += mainwindow.ui \
     dialog/aboutdialog.ui \
@@ -98,6 +102,8 @@ mac {
     ICON = ./artwork/icon/icon.icns
 
     LIBS += -framework Foundation -framework AppKit
+
+    QMAKE_POST_LINK += sed -i -e "s/@VERSION@/$$VERSION/g" "$$DESTDIR/$${TARGET}.app/Contents/Info.plist";
 }
 
 unix:!mac {

@@ -1,14 +1,14 @@
 #ifndef DOWNLOADDIALOG_H
 #define DOWNLOADDIALOG_H
 
-#include <QDialog>
+#include "dialog/blurdialog.h"
 
 namespace Ui {
 class DownloadDialog;
 }
 
 class AppInfo;
-class DownloadDialog : public QDialog
+class DownloadDialog : public BlurDialog
 {
     Q_OBJECT
 

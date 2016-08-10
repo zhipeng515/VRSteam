@@ -3,6 +3,7 @@
 #include "util/models.h"
 #include "util/localappmanager.h"
 #include "download/downloadmanager.h"
+#include "util/qgraphicsgloweffect.h"
 
 #include <QUrl>
 
@@ -12,6 +13,34 @@ DownloadItemWidget::DownloadItemWidget(const int id, QWidget *parent) :
     appId(id)
 {
     ui->setupUi(this);
+
+    QGraphicsGlowEffect * glowEffect = nullptr;
+    glowEffect = new QGraphicsGlowEffect(this);
+    glowEffect->setStrength(4);
+    glowEffect->setBlurRadius(7);
+    ui->nameLabel->setGraphicsEffect(glowEffect);
+
+    glowEffect = new QGraphicsGlowEffect(this);
+    glowEffect->setStrength(4);
+    glowEffect->setBlurRadius(7);
+    ui->infoLabel->setGraphicsEffect(glowEffect);
+
+    glowEffect = new QGraphicsGlowEffect(this);
+    glowEffect->setStrength(4);
+    glowEffect->setBlurRadius(7);
+    ui->operatorButton->setGraphicsEffect(glowEffect);
+
+//    ui->progressBar->setStyleSheet("QProgressBar"
+//                                   "{"
+//                                        "border-radius: 5px;"
+//                                        "background-color: #202020;"
+//                                        "text-align: center;"
+//                                   "}"
+//                                   "QProgressBar::chunk"
+//                                   "{"
+//                                        "background-color: #05B8CC;"
+//                                   "}"
+//                                   );
 
     QPixmap minPixmap = this->style()->standardPixmap(QStyle::SP_MediaPause);
     ui->operatorButton->setIcon(minPixmap);

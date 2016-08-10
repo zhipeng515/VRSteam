@@ -46,12 +46,15 @@ WebView::WebView(QWidget *parent)
     qDebug() << "WebEngine Cache path: " << profile->cachePath();
     qDebug() << "WebEngine Persistent Storage path: " << profile->persistentStoragePath();
 
-    insertJavaScript(profile->scripts());
-
     auto page = new WebPage(profile, this);
     setPage(page);
 
     connect(page, &QWebEnginePage::featurePermissionRequested, this, &WebView::onFeaturePermissionRequest);
+
+    // 补丁，因为重新加载页面导致webchannel丢失，等待QT更新修复BUG
+    connect(this, &WebView::urlChanged, [=]{
+        insertJavaScript(profile->scripts());
+    });
 }
 
 void WebView::contextMenuEvent(QContextMenuEvent *event)

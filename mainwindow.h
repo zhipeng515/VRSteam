@@ -40,6 +40,7 @@ public:
         connect(webView, &WebView::loadProgress, this, &WebViewService::loadProgress);
         connect(webView, &WebView::loadFinished, this, &WebViewService::loadFinished);
         connect(webView, &WebView::titleChanged, this, &WebViewService::titleChanged);
+        connect(webView, &WebView::urlChanged, this, &WebViewService::urlChanged);
     }
 
 public slots:
@@ -54,6 +55,7 @@ signals:
     void loadProgress(int progress);
     void loadFinished(bool);
     void titleChanged(const QString& title);
+    void urlChanged(const QUrl& url);
 
 private:
     WebView * webView;
@@ -155,6 +157,7 @@ private slots:
 
     void linkClicked(const QUrl & url);
     void webViewTitleChanged(const QString &title);
+    void webViewUrlChanged(const QUrl & url);
 
     void notificationClicked(const Notification &notification);
     void notificationReplied(const Notification &notification, const QString &reply);
