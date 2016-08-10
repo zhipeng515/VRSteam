@@ -21,7 +21,8 @@ void URLService::handleURL(const QUrl &url, WebView *webView)
 
     if(RegExpUtils::getInstance()->isUrl(strUrl)) {
         if(!Preferences::getInstance()->isInBlacklist(strUrl))
-           QDesktopServices::openUrl(url);
+            webView->load(url);
+//            QDesktopServices::openUrl(url);
     }
     else {
         // Example : vrst://download?http://www.sina.com.cn/vrsteam.exe
