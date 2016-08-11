@@ -73,27 +73,27 @@ void DownloadDialog::hideEvent(QHideEvent *event)
 
 void DownloadDialog::paintEvent(QPaintEvent *event)
 {
-    QRect rect = this->rect();
+//    QRect rect = this->rect();
 
-    QPixmap maskPixmap(rect.width(), rect.height())    ;
-    maskPixmap.fill(Qt::transparent);
-    QPainter maskPainter(&maskPixmap);
+//    QPixmap maskPixmap(rect.width(), rect.height())    ;
+//    maskPixmap.fill(Qt::transparent);
+//    QPainter maskPainter(&maskPixmap);
 
-    QLinearGradient linearGradient(rect.width()/2,0,rect.width()/2,rect.height());
-    linearGradient.setColorAt(0, Qt::lightGray);
-    linearGradient.setColorAt(1, Qt::darkGray);
-    maskPainter.setBrush(QBrush(linearGradient));
-    maskPainter.setPen(Qt::NoPen);
+//    QLinearGradient linearGradient(rect.width()/2,0,rect.width()/2,rect.height());
+//    linearGradient.setColorAt(0, Qt::lightGray);
+//    linearGradient.setColorAt(1, Qt::darkGray);
+//    maskPainter.setBrush(QBrush(linearGradient));
+//    maskPainter.setPen(Qt::NoPen);
 
-    QPainterPath path(QPoint((rect.width()-ARROW_SIZE.width())/2, ARROW_SIZE.height()));
-    path.lineTo(rect.width()/2, 0);
-    path.lineTo((rect.width()+ARROW_SIZE.width())/2, ARROW_SIZE.height());
-    maskPainter.drawPath(path);
+//    QPainterPath path(QPoint((rect.width()-ARROW_SIZE.width())/2, ARROW_SIZE.height()));
+//    path.lineTo(rect.width()/2, 0);
+//    path.lineTo((rect.width()+ARROW_SIZE.width())/2, ARROW_SIZE.height());
+//    maskPainter.drawPath(path);
 
-    rect.setY(ARROW_SIZE.height());
-    maskPainter.drawRoundedRect(rect, 5, 5);
+//    rect.setY(ARROW_SIZE.height());
+//    maskPainter.drawRoundedRect(rect, 5, 5);
 
-    setMask(maskPixmap.mask());
+//    setMask(maskPixmap.mask());
 
     BlurDialog::paintEvent(event);
 }

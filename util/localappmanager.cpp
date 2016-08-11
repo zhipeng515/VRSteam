@@ -87,10 +87,10 @@ void LocalAppManager::installApp(const int appId)
     AppInfo * appInfo = AppInfo::getModel(appId);
     if(appInfo->isValid()) {
         QFileInfo fileInfo(appInfo->localInstallFile());
-        if(fileInfo.isExecutable())
+        if(fileInfo.exists())
         {
             emit appInstallBegin(*appInfo);
-            QDesktopServices::openUrl(fileInfo.absoluteFilePath());
+            QDesktopServices::openUrl("file://" + fileInfo.absoluteFilePath());
             emit appInstallComplete(*appInfo);
         }
     }
@@ -101,8 +101,8 @@ void LocalAppManager::uninstallApp(const int appId)
     AppInfo * appInfo = AppInfo::getModel(appId);
     if(appInfo->isValid()) {
         QFileInfo fileInfo(appInfo->installPath() + appInfo->uninstallLauncher());
-        if(fileInfo.isExecutable())
-            QDesktopServices::openUrl(fileInfo.absoluteFilePath());
+        if(fileInfo.exists())
+            QDesktopServices::openUrl("file://" + fileInfo.absoluteFilePath());
     }
 }
 
@@ -111,8 +111,8 @@ void LocalAppManager::launchApp(const int appId)
     AppInfo * appInfo = AppInfo::getModel(appId);
     if(appInfo->isValid()) {
         QFileInfo fileInfo(appInfo->launcher());
-        if(fileInfo.isExecutable())
-            QDesktopServices::openUrl(fileInfo.absoluteFilePath());
+        if(fileInfo.exists())
+            QDesktopServices::openUrl("file://" + fileInfo.absoluteFilePath());
     }
 }
 
@@ -121,7 +121,7 @@ bool LocalAppManager::isAppInstalled(const int appId)
     AppInfo * appInfo = AppInfo::getModel(appId);
     if(appInfo->isValid()) {
         QFileInfo fileInfo(appInfo->launcher());
-        return fileInfo.isExecutable();
+        return fileInfo.exists();
     }
     return false;
 }
@@ -131,7 +131,7 @@ bool LocalAppManager::isAppDownloaded(const int appId)
     AppInfo * appInfo = AppInfo::getModel(appId);
     if(appInfo->isValid()) {
         QFileInfo fileInfo(appInfo->localInstallFile());
-        return fileInfo.isExecutable();
+        return fileInfo.exists();
     }
     return false;
 }

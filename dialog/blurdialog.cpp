@@ -1,4 +1,4 @@
-#include "blurdialog.h"
+﻿#include "blurdialog.h"
 #include <QScreen>
 #include <QGraphicsBlurEffect>
 #include <QGraphicsItem>
@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QDebug>
 
 QPixmap BlurAPixmap(const QPixmap& inPixmap, qreal blurRadius)
 {
@@ -63,8 +64,9 @@ void BlurDialog::grabBackground()
                                                                   screenPos.y()/primaryScreen->devicePixelRatio(),
                                                                   size().width()/primaryScreen->devicePixelRatio(),
                                                                   size().height()/primaryScreen->devicePixelRatio()); // 獲取整個屏幕窗口
+    qDebug() << "1111" << pixmap.save("c:\\1.png", "PNG");
     backgroundPixmap = BlurAPixmap(pixmap, 10);
-    backgroundPixmap.save("c:\aaa.png");
+    qDebug() << "2222" << backgroundPixmap.save("c:\\2.png", "PNG");
 }
 
 void BlurDialog::showEvent(QShowEvent *event)
