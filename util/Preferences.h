@@ -58,6 +58,7 @@ public:
 private:
     QSettings settings;
     QStringList blacklist;
+    void mkdir(const QString & path);
 };
 
 

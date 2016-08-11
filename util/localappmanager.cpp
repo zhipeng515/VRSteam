@@ -38,7 +38,7 @@ LocalAppManager::LocalAppManager(QObject *parent) : QObject(parent)
 
     DownloadApps::loadModels(Preferences::getInstance()->getSettingPath()+"downloadapps.json");
     downloadApps = DownloadApps::getModel(1);
-    if(downloadApps == nullptr)
+    if(!downloadApps->isValid())
     {
         downloadApps = new DownloadApps;
         downloadApps->id(1);
@@ -46,6 +46,8 @@ LocalAppManager::LocalAppManager(QObject *parent) : QObject(parent)
         DownloadApps::addModel(1, downloadApps);
         DownloadApps::saveModels(Preferences::getInstance()->getSettingPath()+"downloadapps.json");
     }
+
+    downloadAll();
 
     // Test code
 //    downloadApp(0, "http://www.sina.com.cn", "abc", "http://e.hiphotos.baidu.com/zhidao/pic/item/cefc1e178a82b9014e150b23718da9773912ef62.jpg", "1.0", "");
@@ -182,3 +184,10 @@ AppInfo * LocalAppManager::getDownloadApp(const QUrl & url)
     return nullptr;
 }
 
+void LocalAppManager::downloadAll()
+{
+    for(int i = 0; i< downloadApps->countAppInfo(); i++) {
+        AppInfo * appInfo = downloadApps->itemAppInfoAt(i);
+        DownloadManager::getInstance()->download(appInfo->downloadUrl(), Preferences::getInstance()->getDownloadPath());
+    }
+}

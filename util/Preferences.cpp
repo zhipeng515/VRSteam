@@ -75,9 +75,7 @@ bool Preferences::isInBlacklist(const QString &url)
 
 void Preferences::setDownloadPath(const QString& path)
 {
-    QDir downloadDir;
-    if(!downloadDir.exists(path))
-        downloadDir.mkpath(path);
+    mkdir(path);
 
     settings.beginGroup("path");
     settings.setValue("download", path);
@@ -89,14 +87,13 @@ QString Preferences::getDownloadPath()
     settings.beginGroup("path");
     auto path = settings.value("download", "").toString();
     settings.endGroup();
+    mkdir(path);
     return path;
 }
 
 void Preferences::setSettingPath(const QString& path)
 {
-    QDir settingDir;
-    if(!settingDir.exists(path))
-        settingDir.mkpath(path);
+    mkdir(path);
 
     settings.beginGroup("path");
     settings.setValue("setting", path);
@@ -108,6 +105,7 @@ QString Preferences::getSettingPath()
     settings.beginGroup("path");
     auto path = settings.value("setting", "").toString();
     settings.endGroup();
+    mkdir(path);
     return path;
 }
 
@@ -132,4 +130,13 @@ bool Preferences::isPermissionDenied(QWebEnginePage::Feature feature)
     auto denied = !settings.value(QString::number(feature), true).toBool();
     settings.endGroup();
     return denied;
+}
+
+void Preferences::mkdir(const QString & path)
+{
+    if(path != "") {
+        QDir dir;
+        if(!dir.exists(path))
+            dir.mkpath(path);
+    }
 }

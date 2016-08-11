@@ -26,6 +26,7 @@
 #include "dialog/activitydialog.h"
 #include "util/models.h"
 #include "util/httpservice.h"
+#include "util/localappmanager.h"
 
 
 JSNotifcationWrapper::JSNotifcationWrapper(NotificationService *service, QObject *parent)

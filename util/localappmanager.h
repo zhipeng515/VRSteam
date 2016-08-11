@@ -46,6 +46,7 @@ public slots:
     bool isAppNeedUpdated(const int appId, const QString & latestVersion);
 
     void downloadComplete(const QUrl & url);
+    void downloadAll();
 
     AppInfo * getDownloadApp(const QUrl & url);
     DownloadApps * getDownloadApps(){

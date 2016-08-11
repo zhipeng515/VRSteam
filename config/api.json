@@ -1,7 +1,7 @@
 {
     "id":"0",
     "name": "api",
-    "host": "http://10.205.20.112:8080/SteamWeb/",
+    "host": "http://10.205.20.112:8080/SteamWeb/detail.html",
     "apis": [
         {
             "id": "1",
