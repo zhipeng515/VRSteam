@@ -32,7 +32,10 @@ signals:
     void appDownloadTimeout(const QUrl & url);
 
 
-public slots:    
+public slots:
+    QString getOS();
+    QString getOSVersion();
+
     void downloadApp(const int id, const QString & downloadUrl, const QString & appName,
                      const QString & iconUrl, const QString & version, const QString & launcher);
     void installApp(const int appId);

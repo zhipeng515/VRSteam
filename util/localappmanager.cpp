@@ -56,6 +56,8 @@ LocalAppManager::LocalAppManager(QObject *parent) : QObject(parent)
 //    downloadApp(3, "http://www.sinaa.com.cn", "abc", "http://e.hiphotos.baidu.com/zhidao/pic/item/cefc1e178a82b9014e150b23718da9773912ef62.jpg", "1.0", "");
 //    downloadApp(4, "http://www.baidua.com", "abcdef", "http://e.hiphotos.baidu.com/zhidao/pic/item/cefc1e178a82b9014e150b23718da9773912ef62.jpg", "1.0", "");
 //    downloadApp(5, "http://www.qqqa.com", "abcdefhig", "http://e.hiphotos.baidu.com/zhidao/pic/item/cefc1e178a82b9014e150b23718da9773912ef62.jpg", "1.0", "");
+
+    qDebug() << getOS() << getOSVersion();
 }
 
 void LocalAppManager::downloadApp(const int id, const QString & downloadUrl, const QString & appName,
@@ -190,4 +192,14 @@ void LocalAppManager::downloadAll()
         AppInfo * appInfo = downloadApps->itemAppInfoAt(i);
         DownloadManager::getInstance()->download(appInfo->downloadUrl(), Preferences::getInstance()->getDownloadPath());
     }
+}
+
+QString LocalAppManager::getOS()
+{
+    return QSysInfo::productType();
+}
+
+QString LocalAppManager::getOSVersion()
+{
+    return QSysInfo::productVersion();
 }
